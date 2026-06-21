@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: jaiswal-fashion
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        value: Suresh@80849934#owner&sonu&jaiswal
+      - key: SESSION_TTL
+        value: 7200
+      - key: ADMIN_PATH
+        value: admin

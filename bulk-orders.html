@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inquire for bulk orders and wholesale prices at Jaiswal Fashion. Exclusive discounts for shopkeepers.">
+  <title>Bulk Enquiries | Jaiswal Fashion</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/pages.css">
+</head>
+<body>
+  <div id="nav-container"></div>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Bulk Enquiries</span>
+      </div>
+      <h1 class="page-hero-title"><span class="text-gold">B2B</span> Wholesale</h1>
+      <p class="page-hero-subtitle">Exclusive factory prices for shopkeepers and distributors.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="bulk-layout">
+        <div class="bulk-benefits animate-fade-right">
+          <h2 style="font-family: var(--font-display); font-size: var(--fs-3xl); margin-bottom: var(--sp-8);">Why Partner With Us?</h2>
+          
+          <div class="bulk-benefit-item">
+            <div class="bulk-benefit-icon">💰</div>
+            <div>
+              <h4 style="font-size: var(--fs-lg); margin-bottom: 2px;">High Profit Margins</h4>
+              <p style="color: var(--text-secondary); font-size: var(--fs-sm);">Get up to 40% discount on MRP for maximum retail profit.</p>
+            </div>
+          </div>
+          
+          <div class="bulk-benefit-item">
+            <div class="bulk-benefit-icon">📦</div>
+            <div>
+              <h4 style="font-size: var(--fs-lg); margin-bottom: 2px;">Low Minimum Quantity</h4>
+              <p style="color: var(--text-secondary); font-size: var(--fs-sm);">Start with just 50 pieces across mixed categories.</p>
+            </div>
+          </div>
+          
+          <div class="bulk-benefit-item">
+            <div class="bulk-benefit-icon">🚚</div>
+            <div>
+              <h4 style="font-size: var(--fs-lg); margin-bottom: 2px;">Fast Delivery</h4>
+              <p style="color: var(--text-secondary); font-size: var(--fs-sm);">Reliable logistics ensuring your stock reaches you on time.</p>
+            </div>
+          </div>
+        </div> <!-- End bulk-benefits -->
+
+        <div class="bulk-form-container animate-fade-left">
+          <div class="form-card" style="background: var(--bg-card); padding: var(--sp-8); border-radius: var(--radius-2xl); border: 1px solid var(--border-subtle);">
+            <h3 style="font-family: var(--font-display); font-size: var(--fs-2xl); margin-bottom: var(--sp-6);">Request Bulk Quote</h3>
+            <form id="bulkForm">
+              <div class="form-group">
+                <label class="form-label">Shop/Business Name</label>
+                <input type="text" class="form-input" required placeholder="Enter shop name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Contact Person</label>
+                <input type="text" class="form-input" required placeholder="Your Name">
+              </div>
+              
+              <div class="flex gap-4" style="margin-bottom: var(--sp-5);">
+                <div style="flex: 1;">
+                  <label class="form-label">Phone/WhatsApp</label>
+                  <input type="tel" class="form-input" required placeholder="10-digit number">
+                </div>
+                <div style="flex: 1;">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-input" required placeholder="E.g. Patna">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Product Categories Interested In</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); margin-top: var(--sp-2);">
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkbox-custom"></span><span>T-Shirts</span></label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkbox-custom"></span><span>Lowers & Pants</span></label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkbox-custom"></span><span>Jackets & Hoodies</span></label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkbox-custom"></span><span>Kurtas</span></label>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Estimated Monthly Volume</label>
+                <select class="form-select">
+                  <option value="50-100">50 - 100 Pieces</option>
+                  <option value="100-500">100 - 500 Pieces</option>
+                  <option value="500-1000">500 - 1000 Pieces</option>
+                  <option value="1000+">1000+ Pieces</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-xl w-full">Request Quote & Catalog</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+    initPage('bulk');
+
+    document.getElementById('bulkForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target;
+      const inputs = form.querySelectorAll('input, select');
+      
+      const shopName = inputs[0].value;
+      const contactPerson = inputs[1].value;
+      const phone = inputs[2].value;
+      const city = inputs[3].value;
+      
+      const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+      const categoryLabels = ['T-Shirts', 'Lowers & Pants', 'Jackets & Hoodies', 'Kurtas'];
+      const categories = [];
+      checkboxes.forEach((cb, index) => {
+        if (cb.checked) categories.push(categoryLabels[index]);
+      });
+      
+      const volume = form.querySelector('select').value;
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/bulk-orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ shopName, contactPerson, phone, city, categories, volume })
+        });
+        
+        if (res.ok) {
+          showToast('Request submitted successfully! Our wholesale team will contact you shortly.', 'success', 5000);
+          form.reset();
+        } else {
+          showToast('Failed to submit request. Please try again later.', 'error', 3000);
+        }
+      } catch (err) {
+        showToast('Network error. Please try again.', 'error', 3000);
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

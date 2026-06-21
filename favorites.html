@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View your favorite products at Jaiswal Fashion.">
+  <title>Favorites | Jaiswal Fashion</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <style>
+    .favorites-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--sp-8);
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--sp-6);
+    }
+  </style>
+</head>
+<body>
+  <div id="nav-container"></div>
+
+  <main class="page-content">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Favorites</span>
+      </div>
+
+      <div class="favorites-header">
+        <h1 class="page-hero-title" style="margin:0; font-size: var(--fs-4xl);">Your <span class="text-gold">Favorites</span></h1>
+        <span class="results-count" id="favCount" style="color: var(--text-secondary);"></span>
+      </div>
+
+      <div class="products-grid" id="favoritesGrid"></div>
+
+      <div class="empty-state" id="emptyFavorites" style="display: none;">
+        <span class="empty-state-icon" style="color: #ef4444;">💔</span>
+        <h3 class="empty-state-title">No Favorites Yet</h3>
+        <p class="empty-state-text">You haven't added any products to your favorites. Browse our collection and click the heart icon to save items for later.</p>
+        <a href="products.html" class="btn btn-primary btn-lg">Browse Products</a>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+
+
+
+
+    initPage('').then(() => {
+      if (!isLoggedIn()) {
+        requireLogin('favorites.html');
+        return;
+      }
+
+      // Add a wrapper to the global handleFavClick to re-render the grid if removed from favorites page
+      const originalHandler = window.handleFavClick;
+      window.handleFavClick = (productId, btn) => {
+        if (originalHandler) originalHandler(productId, btn);
+        setTimeout(() => renderFavorites(), 300);
+      };
+      
+      renderFavorites();
+    });
+
+    function renderFavorites() {
+      let favIds = getFavorites();
+      const grid = document.getElementById('favoritesGrid');
+      const emptyState = document.getElementById('emptyFavorites');
+      const countLabel = document.getElementById('favCount');
+
+      // Auto-clean ghost items
+      const validFavs = favIds.filter(id => products.some(p => p.id === id));
+      if (validFavs.length !== favIds.length) {
+        favIds = validFavs;
+        saveToStorage('jf_favorites', favIds);
+        updateFavBadge();
+      }
+
+      if (favIds.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'flex';
+        countLabel.textContent = '0 Items';
+        return;
+      }
+
+      grid.style.display = 'grid';
+      emptyState.style.display = 'none';
+      countLabel.textContent = `${favIds.length} Item${favIds.length > 1 ? 's' : ''}`;
+
+      const favProducts = products.filter(p => favIds.includes(p.id));
+      grid.innerHTML = favProducts.map(p => createProductCard(p)).join('');
+
+      setTimeout(() => initScrollReveal(), 50);
+    }
+  </script>
+</body>
+</html>

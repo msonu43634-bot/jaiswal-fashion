@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Jaiswal Fashion — Bihar's #1 Garment Manufacturer. Premium T-Shirts, Lowers, Jackets, Hoodies, Kurtas at wholesale prices. Direct from factory in Madhubani.">
+  <title>Jaiswal Fashion | Premium Garments from Madhubani, Bihar</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/home.css?v=3">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <img src="./image/logo.jpeg" alt="Jaiswal Fashion Logo"
+        style="width: 150px; height: 150px; border-radius: 50%; object-fit: contain; background: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); margin: 0 auto;">
+      <div class="splash-loader"></div>
+      <div class="splash-title">JAISWAL <span class="text-gold">FASHION</span></div>
+      <div class="splash-subtitle">Manufacture Garments</div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <div id="nav-container"></div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="container hero-content">
+      <div class="hero-text animate-fade-up">
+        <div class="hero-top-label">
+          <span class="orange-line"></span> MADHUBANI, BIHAR . PREMIUM GARMENT MANUFACTURERS
+        </div>
+        <h1 class="hero-title">
+          STYLE<br>
+          MADE IN<br>
+          <span class="text-orange">BIHAR</span>
+        </h1>
+        <p class="hero-desc">
+          Jaiswal Fashion — Premium quality Lowers, T-Shirts, Jackets,<br>Hoodies, and Half Pants. Bulk orders welcome.
+        </p>
+        <div class="hero-actions">
+          <a href="products.html" class="btn btn-orange">VIEW PRODUCTS</a>
+          <a href="bulk-orders.html" class="btn btn-outline-dark">Bulk Enquiries</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar" id="statsSection">
+    <div class="container">
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section" id="aboutSection">
+    <div class="container">
+      <div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-12);align-items:center;">
+        <div>
+          <span class="section-badge" style="display:inline-block;margin-bottom:var(--sp-4)">About Us</span>
+          <h2 class="section-title" style="text-align:left;margin-bottom:var(--sp-4)">From Madhubani to <span class="text-gold">All of India</span></h2>
+          <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:var(--sp-4)">Founded in 2019, Jaiswal Fashion started with a simple vision: to provide premium quality, affordable garments directly from the factory to shopkeepers, cutting out the middlemen.</p>
+          <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:var(--sp-6)">Today, we are proud to supply to over 1000+ happy shopkeepers across India, producing over 10,000 pieces monthly.</p>
+          <a href="about.html" class="btn btn-outline">Know More →</a>
+        </div>
+        <div style="border-radius:var(--radius-2xl);overflow:hidden;border:1px solid var(--border-subtle)">
+          <img src="image/manufacture1.jpeg" alt="Our Manufacturing Unit" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="section" id="categories">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">Our Collection</span>
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-subtitle">Browse our wide range of premium garments, crafted with care at our Madhubani
+          factory</p>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section features-section" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">Why Choose Us</span>
+        <h2 class="section-title">The Jaiswal Fashion Advantage</h2>
+        <p class="section-subtitle">What makes us Bihar's most trusted garment manufacturer</p>
+      </div>
+      <div class="features-grid" id="featuresGrid"></div>
+    </div>
+  </section>
+
+  <!-- Bestsellers Section -->
+  <section class="section" id="bestsellers">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">Top Picks</span>
+        <h2 class="section-title">Bestselling Products</h2>
+        <p class="section-subtitle">Our most popular garments loved by shopkeepers across India</p>
+      </div>
+      <div class="products-grid" id="bestsellersGrid"></div>
+      <div class="text-center" style="margin-top: var(--sp-10)">
+        <a href="products.html" class="btn btn-outline btn-lg">View All Products →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buluk Collection Section -->
+  <section class="section" id="bulukSection" style="background: rgba(139,0,0,0.03); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge" style="background: rgba(139,0,0,0.1); color: #8b0000;">New Arrival</span>
+        <h2 class="section-title">Bulk Order Only <span class="text-gold">Section</span></h2>
+        <p class="section-subtitle">Premium velvet fabric garments — soft, rich, and made for elegance</p>
+      </div>
+      <div class="products-grid" id="bulukGrid"></div>
+      <div class="text-center" style="margin-top: var(--sp-10)">
+        <a href="bulk-product.html" class="btn btn-outline btn-lg">View All Bulk →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bulk Products Section -->
+  <section class="section" id="bulkProductsWrapper" style="display:none; background: rgba(255, 69, 0, 0.02); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge" style="background: rgba(255, 69, 0, 0.1); color: #ff4500;">Wholesale Exclusive</span>
+        <h2 class="section-title">Bulk Products (Min. Qty 20)</h2>
+        <p class="section-subtitle">Special factory-direct rates for bulk buyers.</p>
+      </div>
+      <div class="products-grid" id="bulkProductsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Bulk Order CTA -->
+  <section class="section bulk-cta-section" id="bulkPricingSection">
+    <div class="container">
+      <div class="bulk-cta reveal">
+        <div class="bulk-cta-content">
+          <span class="section-badge">For Shopkeepers</span>
+          <h2 class="bulk-cta-title">Order in Bulk,<br><span class="text-gold">Save More!</span></h2>
+          <p class="bulk-cta-desc">Get exclusive wholesale prices with bulk orders. Minimum order just 50 pieces. Up to
+            40% discount on large orders.</p>
+          <div class="bulk-tiers" id="bulkTiers"></div>
+          <a href="bulk-orders.html" class="btn btn-primary btn-lg">Get Bulk Quote →</a>
+        </div>
+        <div class="bulk-cta-visual">
+          <div class="bulk-visual-card">
+            <div class="bulk-emoji">🏭</div>
+            <h3>Direct from Factory</h3>
+            <p>No middlemen, best prices</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Location Section -->
+  <section class="section" id="location">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">Find Us</span>
+        <h2 class="section-title">Visit Our Factory</h2>
+        <p class="section-subtitle">Come visit our manufacturing unit in Madhubani, Bihar</p>
+      </div>
+      <div class="location-grid reveal">
+        <div class="location-map">
+          <iframe
+            src="https://maps.google.com/maps?width=100%25&amp;height=100%25&amp;hl=en&amp;q=Jaiswal%20Fashion%20manufacturing%20garments%20mahatha%20ladhania%20madhubani%20847232+(Jaiswal%20Fashion)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+            width="100%" height="100%" style="border:0; border-radius: var(--radius-xl); min-height: 350px;"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div class="location-card">
+          <div class="location-item">
+            <span class="location-icon">📍</span>
+            <div>
+              <h4>Factory Address</h4>
+              <p>Mahatha, Ladhania, Madhubani,<br>Bihar - 847232, India</p>
+              <a href="https://share.google/edHuUZHZK3E77BHoU" target="_blank"
+                style="color: var(--gold); font-size: var(--fs-sm);">📍 Open in Maps</a>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">📞</span>
+            <div>
+              <h4>Call Us</h4>
+              <p><a href="https://wa.me/918084341453" target="_blank" style="color: inherit; text-decoration: none;">+91
+                  80843 41453</a></p>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">✉️</span>
+            <div>
+              <h4>Email Us</h4>
+              <p><a href="mailto:jaiswalfashions@gmail.com"
+                  style="color: inherit; text-decoration: none;">jaiswalfashions@gmail.com</a></p>
+            </div>
+          </div>
+          <div class="location-item">
+            <span class="location-icon">🕐</span>
+            <div>
+              <h4>Business Hours</h4>
+              <p>Mon - Sat: 9:00 AM - 7:00 PM</p>
+            </div>
+          </div>
+          <a href="https://wa.me/918084341453" class="btn btn-success btn-lg w-full" style="margin-top: var(--sp-4)">
+            💬 Chat on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">Testimonials</span>
+        <h2 class="section-title">What Our Partners Say</h2>
+        <p class="section-subtitle">Trusted by 1000+ shopkeepers across India</p>
+      </div>
+      <div class="testimonials-grid" id="testimonialsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+
+
+
+
+    // Initialize page
+    initPage('home').then(() => {
+      // Render Stats
+      const statsGrid = document.getElementById('statsGrid');
+      statsGrid.innerHTML = stats.map(stat => `
+        <div class="stat-item reveal">
+          <span class="stat-number">${stat.number}</span>
+          <span class="stat-label">${stat.label}</span>
+        </div>
+      `).join('');
+
+      // Render Categories
+      const categoriesGrid = document.getElementById('categoriesGrid');
+      categoriesGrid.innerHTML = categories.filter(cat => cat.id !== 'buluk').map((cat, i) => {
+        const catProducts = products.filter(p => p.category === cat.id);
+        return `
+        <a href="products.html?category=${cat.id}" class="category-card reveal delay-${i + 1}">
+          <div class="category-icon" style="background: ${cat.gradient}">${cat.icon}</div>
+          <h3 class="category-name">${cat.name}</h3>
+          <span class="category-count">${catProducts.length} Products</span>
+        </a>
+      `}).join('');
+
+      // Render Features
+      const featuresGrid = document.getElementById('featuresGrid');
+      featuresGrid.innerHTML = features.map((feat, i) => `
+        <div class="feature-card reveal delay-${(i % 3) + 1}">
+          <span class="feature-icon">${feat.icon}</span>
+          <h3 class="feature-title">${feat.title}</h3>
+          <p class="feature-desc">${feat.description}</p>
+        </div>
+      `).join('');
+
+      // Render Bestsellers (top 4 by rating)
+      const bestsellers = [...products].filter(p => !p.is_bulk).sort((a, b) => b.rating - a.rating).slice(0, 4);
+      const bestsellersGrid = document.getElementById('bestsellersGrid');
+      bestsellersGrid.innerHTML = bestsellers.map(p => createProductCard(p)).join('');
+
+      // Render Buluk Collection
+      const bulukProducts = products.filter(p => p.category === 'buluk' && !p.is_bulk);
+      const bulukGrid = document.getElementById('bulukGrid');
+      if (bulukProducts.length > 0) {
+        bulukGrid.innerHTML = bulukProducts.slice(0, 8).map(p => createProductCard(p)).join('');
+      } else {
+        document.getElementById('bulukSection').style.display = 'none';
+      }
+
+      // Fetch settings - control all homepage sections
+      fetch(`/api/settings`)
+        .then(r => r.json())
+        .then(settings => {
+          const hide = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
+          if (settings.buluk_enabled !== 'true') { hide('bulukSection'); const l = document.getElementById('navBulukLink'); if (l) l.style.display = 'none'; }
+          if (settings.show_bulk_section === 'true') {
+            const bp = products.filter(p => p.is_bulk === 1 || p.is_bulk === true);
+            if (bp.length > 0) { document.getElementById('bulkProductsWrapper').style.display = 'block'; document.getElementById('bulkProductsGrid').innerHTML = bp.map(p => createProductCard(p)).join(''); }
+          }
+          if (settings.show_stats !== 'true') hide('statsSection');
+          if (settings.show_categories !== 'true') hide('categories');
+          if (settings.show_features !== 'true') hide('features');
+          const showProd = settings.show_products !== undefined ? settings.show_products : settings.show_bestsellers;
+          if (showProd !== 'true') hide('bestsellers');
+          if (settings.show_testimonials !== 'true') hide('testimonials');
+          if (settings.show_bulk_pricing !== 'true') hide('bulkPricingSection');
+        })
+        .catch(err => console.error('Failed to fetch settings:', err));
+
+      // Render Bulk Pricing Tiers
+      const bulkTiers = document.getElementById('bulkTiers');
+      bulkTiers.innerHTML = bulkPricing.map(tier => `
+        <div class="bulk-tier">
+          <span class="tier-badge">${tier.badge}</span>
+          <span class="tier-range">${tier.range}</span>
+          <span class="tier-discount">${tier.discount}</span>
+        </div>
+      `).join('');
+
+      // Render Testimonials from API
+      fetch('/api/testimonials').then(r => r.json()).then(testimonialsData => {
+        const testimonialsGrid = document.getElementById('testimonialsGrid');
+        testimonialsGrid.innerHTML = testimonialsData.map((t, i) => `
+          <div class="testimonial-card reveal delay-${(i % 4) + 1}">
+            <div class="testimonial-stars">${renderStars(t.rating)}</div>
+            <p class="testimonial-text">"${t.text}"</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">${t.name.charAt(0)}</div>
+              <div>
+                <h4 class="testimonial-name">${t.name}</h4>
+                <p class="testimonial-role">${t.role}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }).catch(() => {});
+
+      setTimeout(() => initScrollReveal(), 100);
+    });
+
+    // Splash screen fadeout
+    window.addEventListener('DOMContentLoaded', () => {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        setTimeout(() => {
+          splash.classList.add('fade-out');
+          setTimeout(() => {
+            splash.remove();
+          }, 800);
+        }, 2200);
+      }
+    });
+  </script>
+</body>
+
+</html>

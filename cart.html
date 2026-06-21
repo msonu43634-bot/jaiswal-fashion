@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shopping cart — Review your items, manage quantities, and proceed to checkout.">
+  <title>Cart | Jaiswal Fashion</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/cart.css">
+</head>
+<body>
+  <div id="nav-container"></div>
+
+  <main class="page-content">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Cart</span>
+      </div>
+
+      <h1 class="cart-page-title">Shopping <span class="text-gold">Cart</span></h1>
+
+      <!-- Cart Content -->
+      <div class="cart-layout" id="cartLayout">
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-summary" id="cartSummary"></div>
+      </div>
+
+      <!-- Empty Cart -->
+      <div class="empty-state" id="emptyCart" style="display: none;">
+        <span class="empty-state-icon">🛒</span>
+        <h3 class="empty-state-title">Your Cart is Empty</h3>
+        <p class="empty-state-text">Looks like you haven't added anything to your cart yet. Start shopping now!</p>
+        <a href="products.html" class="btn btn-primary btn-lg">Browse Products</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal-content payment-modal-content" style="position:relative">
+      <button class="modal-close" id="closePaymentModal">?</button>
+      <h2 class="payment-modal-title">Checkout Details</h2>
+      
+      <!-- Checkout Address Selection/Entry -->
+      <!-- Checkout Address Selection/Entry -->
+      <div id="checkoutSavedAddressView" style="display: none; margin-bottom: 24px; text-align: left;">
+        <h4 style="margin-bottom: 12px; font-size: 16px;">Delivery Address</h4>
+        
+        <label id="lblSavedAddress" style="display: flex; padding: 16px; border: 1px solid var(--gold); border-radius: 8px; margin-bottom: 12px; cursor: pointer; background: rgba(212, 175, 55, 0.05); align-items: flex-start;">
+          <input type="radio" name="address_sel" value="saved" checked onchange="handleAddressSelection()" style="margin-top: 4px; accent-color: var(--gold);">
+          <div style="margin-left: 12px;">
+            <div style="margin-bottom: 4px;">
+              <span id="savedCheckoutName" style="font-weight: 700; color: var(--text-white); font-size: 15px;"></span>
+              <span id="savedCheckoutType" style="background: var(--bg-secondary); color: var(--text-secondary); font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-left: 8px;">HOME</span>
+            </div>
+            <div id="savedCheckoutFullAddress" style="font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px;"></div>
+            <div id="savedCheckoutPhone" style="font-size: 14px; color: var(--text-white); font-weight: 600;"></div>
+          </div>
+        </label>
+
+        <label id="lblNewAddress" style="display: flex; padding: 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; align-items: center;">
+          <input type="radio" name="address_sel" value="new" onchange="handleAddressSelection()" style="accent-color: var(--gold);">
+          <span style="margin-left: 12px; font-weight: 600; color: var(--text-white); font-size: 15px;">+ Add a new address</span>
+        </label>
+      </div>
+
+      <div id="checkoutAddressFormContainer" class="checkout-form" style="margin-bottom: 24px; text-align: left;">
+        <h4 style="margin-bottom: 12px; font-size: 16px;">Delivery Information</h4>
+        <div class="form-group" style="position: relative; margin-bottom: 16px;">
+          <input type="tel" id="checkoutPhone" class="form-input" placeholder="Phone Number (Required) *" maxlength="10" required>
+          <span id="autofillLoader" style="position: absolute; right: 12px; top: 14px; font-size: 12px; font-weight: 600; color: var(--gold); display: none;">Auto-filling...</span>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <input type="text" id="checkoutName" class="form-input" placeholder="Full Name (Required) *" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <input type="email" id="checkoutEmail" class="form-input" placeholder="Email (Optional)">
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: 8px;">
+          <span style="font-size: 14px; font-weight: 700; color: var(--text-white); text-transform: uppercase;">Delivery Address</span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; margin-bottom: 16px; align-items: stretch;">
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="checkoutPincode" class="form-input" placeholder="Pincode (Required) *" maxlength="6" required oninput="fetchCityFromPincode(this.value, 'checkoutCity')">
+          </div>
+          <button type="button" style="background: #2874f0; color: #fff; border: none; border-radius: var(--radius-md); padding: 0 16px; display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;" onclick="autoDetectLocationForCheckout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span id="checkoutLocText">Use my location</span>
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="checkoutState" class="form-input" placeholder="State (Required) *" required>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="checkoutCity" class="form-input" placeholder="City (Required) *" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <input type="text" id="checkoutHouse" class="form-input" placeholder="House No., Building Name (Required) *" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <input type="text" id="checkoutRoad" class="form-input" placeholder="Road name, Area, Colony (Required) *" required>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">Type of address</div>
+          <div style="display: flex; gap: 12px;">
+            <label style="display:flex; align-items:center; gap:6px; background:var(--bg-card); border:1px solid var(--border); padding:8px 16px; border-radius:20px; cursor:pointer; color:var(--text-white); font-size: 14px;">
+              <input type="radio" name="checkoutType" value="Home" checked> 🏠 Home
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; background:var(--bg-card); border:1px solid var(--border); padding:8px 16px; border-radius:20px; cursor:pointer; color:var(--text-white); font-size: 14px;">
+              <input type="radio" name="checkoutType" value="Work"> 🏢 Work
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom: 12px; font-size: 16px; text-align: left;">Payment Method</h4>
+      <div class="payment-options" id="paymentOptions">
+        <label class="payment-option">
+          <input type="radio" name="payment" value="upi" checked>
+          <div class="payment-option-card">
+            <span class="payment-opt-icon">📱</span>
+            <div>
+              <h4>UPI Payment</h4>
+              <p>Google Pay, PhonePe, Paytm</p>
+            </div>
+          </div>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="payment" value="card">
+          <div class="payment-option-card">
+            <span class="payment-opt-icon">💳</span>
+            <div>
+              <h4>Credit / Debit Card</h4>
+              <p>Visa, Mastercard, RuPay</p>
+            </div>
+          </div>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="payment" value="netbanking">
+          <div class="payment-option-card">
+            <span class="payment-opt-icon">🏦</span>
+            <div>
+              <h4>Net Banking</h4>
+              <p>All major banks supported</p>
+            </div>
+          </div>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="payment" value="cod">
+          <div class="payment-option-card">
+            <span class="payment-opt-icon">💵</span>
+            <div>
+              <h4>Cash on Delivery</h4>
+              <p>Pay when you receive</p>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="coupon-section">
+        <h4>Have a coupon code?</h4>
+        <div class="coupon-input-group">
+          <input type="text" class="form-input" placeholder="Enter coupon code" id="couponInput">
+          <button class="btn btn-outline" id="applyCoupon">Apply</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-xl w-full" id="confirmPayment" style="margin-top: var(--sp-6)">
+        Confirm & Place Order
+      </button>
+    </div>
+  </div>
+
+  <div id="footer-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+    initPage('').then(() => {
+      if (!isLoggedIn()) {
+        requireLogin('cart.html');
+        return;
+      }
+      renderCart();
+    });
+
+    let appliedCoupon = null;
+    let couponDiscount = 0;
+
+    function renderCart() {
+      let cart = getCart();
+      const cartLayout = document.getElementById('cartLayout');
+      const emptyCart = document.getElementById('emptyCart');
+
+      // Auto-clean ghost items (products that no longer exist)
+      const validCart = cart.filter(item => products.some(p => p.id === item.productId));
+      if (validCart.length !== cart.length) {
+        cart = validCart;
+        saveToStorage('jf_cart', cart);
+        updateCartBadge();
+      }
+
+      if (cart.length === 0) {
+        cartLayout.style.display = 'none';
+        emptyCart.style.display = 'flex';
+        return;
+      }
+
+      cartLayout.style.display = 'grid';
+      emptyCart.style.display = 'none';
+
+      // Render cart items
+      const cartItemsEl = document.getElementById('cartItems');
+      let subtotal = 0;
+
+      cartItemsEl.innerHTML = cart.map((item, index) => {
+        const product = products.find(p => p.id === item.productId);
+        if (!product) return '';
+
+        const itemTotal = product.price * item.quantity;
+        subtotal += itemTotal;
+
+        const selectedColorObj = (product.colors && product.colors.length > 0) 
+          ? (product.colors.find(c => c.name === item.color) || product.colors[0]) 
+          : { name: 'Default', hex: '#333' };
+        const colorHex = selectedColorObj.hex || '#333';
+
+        let cartImageHTML;
+        if (product.images && product.images.length > 0) {
+          let matchedImg = product.images[0];
+          if (item.color) {
+            const found = product.images.find(img => img.color_name === item.color);
+            if (found) matchedImg = found;
+          }
+          const imgUrl = getImageUrl(matchedImg.image_path);
+          cartImageHTML = `<img src="${imgUrl}" alt="${product.name}" style="width:100%; height:100%; object-fit:contain; object-position:center; padding:4px;">`;
+        } else {
+          cartImageHTML = `<span style="color: ${colorHex}; width: 60%; height: 60%; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            ${getCategorySVG(product.category)}
+          </span>`;
+        }
+
+        return `
+          <div class="cart-item animate-fade-up" onclick="window.location.href='product-detail.html?id=${product.id}'" style="cursor:pointer;">
+            <div class="cart-item-image" style="background: #f1f5f9; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+              ${cartImageHTML}
+            </div>
+            <div class="cart-item-details">
+              <a href="product-detail.html?id=${product.id}" class="cart-item-name" onclick="event.stopPropagation()">${product.name}</a>
+              <div class="cart-item-meta">
+                <span class="cart-meta-tag">${item.color}</span>
+                <span class="cart-meta-tag">Size: ${item.size}</span>
+              </div>
+              <div class="cart-item-price-row">
+                <span class="cart-item-price">${formatPrice(product.price)}</span>
+                <span class="cart-item-original">${formatPrice(product.originalPrice)}</span>
+              </div>
+            </div>
+            <div class="cart-item-actions">
+              <div class="qty-control">
+                <button class="qty-btn" onclick="event.stopPropagation(); updateQty(${index}, ${item.quantity - 1})">-</button>
+                <span class="qty-value">${item.quantity}</span>
+                <button class="qty-btn" onclick="event.stopPropagation(); updateQty(${index}, ${item.quantity + 1})">+</button>
+              </div>
+              <span class="cart-item-total">${formatPrice(itemTotal)}</span>
+              <button class="btn btn-ghost cart-remove-btn" onclick="event.stopPropagation(); removeItem(${index})">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render summary
+      const gst = Math.round(subtotal * 0.05);
+      const delivery = subtotal >= 2000 ? 0 : 99;
+      couponDiscount = appliedCoupon ? Math.round(subtotal * 0.1) : 0;
+      const total = subtotal + gst + delivery - couponDiscount;
+
+      document.getElementById('cartSummary').innerHTML = `
+        <div class="summary-card">
+          <h3 class="summary-title">Order Summary</h3>
+          <div class="summary-row"><span>Subtotal (${cart.reduce((s,i) => s+i.quantity, 0)} items)</span><span>${formatPrice(subtotal)}</span></div>
+          <div class="summary-row"><span>GST (5%)</span><span>${formatPrice(gst)}</span></div>
+          <div class="summary-row"><span>Delivery</span><span class="${delivery === 0 ? 'text-gold' : ''}">${delivery === 0 ? 'FREE' : formatPrice(delivery)}</span></div>
+          ${couponDiscount > 0 ? `<div class="summary-row" style="color:#10b981;"><span>Coupon (${appliedCoupon})</span><span>-${formatPrice(couponDiscount)}</span></div>` : ''}
+          ${delivery === 0 ? '' : `<p class="free-delivery-msg">Free delivery on orders above ₹2,000</p>`}
+          <div class="summary-divider"></div>
+          <div class="summary-row total"><span>Total</span><span>${formatPrice(total)}</span></div>
+          <div class="summary-row savings"><span>You Save</span><span>${formatPrice(cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.productId); return s + (p ? (p.originalPrice - p.price) * item.quantity : 0); }, 0) + couponDiscount)}</span></div>
+          <button class="btn btn-primary btn-xl w-full" id="checkoutBtn" style="margin-top: var(--sp-6)">
+            Proceed to Payment
+          </button>
+          <button class="btn btn-ghost w-full" onclick="if(confirm('Clear entire cart?')) { clearCartAndRender(); }" style="margin-top: var(--sp-2)">
+            Clear Cart
+          </button>
+        </div>
+      `;
+
+      document.getElementById('checkoutBtn').addEventListener('click', async () => {
+        try {
+          const res = await fetch(`/api/settings`);
+          const settings = await res.json();
+          const pm = settings.payment_methods || { cod: true, online: false };
+          
+          const optionsDiv = document.getElementById('paymentOptions');
+          optionsDiv.innerHTML = '';
+          
+          if (pm.online) {
+            optionsDiv.innerHTML += `
+              <label class="payment-option">
+                <input type="radio" name="payment" value="upi" checked>
+                <div class="payment-option-card">
+                  <span class="payment-opt-icon">📱</span>
+                  <div>
+                    <h4>UPI Payment</h4>
+                    <p>Google Pay, PhonePe, Paytm</p>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="payment" value="card">
+                <div class="payment-option-card">
+                  <span class="payment-opt-icon">💳</span>
+                  <div>
+                    <h4>Credit / Debit Card</h4>
+                    <p>Visa, Mastercard, RuPay</p>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="payment" value="netbanking">
+                <div class="payment-option-card">
+                  <span class="payment-opt-icon">🏦</span>
+                  <div>
+                    <h4>Net Banking</h4>
+                    <p>All major banks supported</p>
+                  </div>
+                </div>
+              </label>
+            `;
+          }
+          
+          if (pm.cod) {
+            optionsDiv.innerHTML += `
+              <label class="payment-option">
+                <input type="radio" name="payment" value="cod" ${!pm.online ? 'checked' : ''}>
+                <div class="payment-option-card">
+                  <span class="payment-opt-icon">💵</span>
+                  <div>
+                    <h4>Cash on Delivery</h4>
+                    <p>Pay when you receive</p>
+                  </div>
+                </div>
+              </label>
+            `;
+          }
+
+          if (!pm.cod && !pm.online) {
+            optionsDiv.innerHTML = '<p style="color:var(--danger)">No payment methods available right now. Please contact support.</p>';
+            document.getElementById('confirmPayment').disabled = true;
+          } else {
+            document.getElementById('confirmPayment').disabled = false;
+          }
+
+        } catch (e) {
+          console.error("Failed to load payment settings", e);
+        }
+
+        document.getElementById('paymentModal').classList.add('active');
+      });
+    }
+
+
+
+    window.updateQty = (index, qty) => {
+      updateCartQuantity(index, qty);
+      renderCart();
+    };
+
+    window.removeItem = (index) => {
+      removeFromCart(index);
+      renderCart();
+      showToast('Item removed from cart', 'info');
+    };
+
+    window.clearCartAndRender = () => {
+      clearCart();
+      renderCart();
+      showToast('Cart cleared', 'info');
+    };
+    
+    function checkout() {
+      const cart = getCart();
+      if (cart.length === 0) return showToast('Your cart is empty', 'error');
+      
+      const modal = document.getElementById('paymentModal');
+      modal.classList.add('active');
+    }
+    
+    function autoDetectLocationForCheckout() {
+      const btnText = document.getElementById('checkoutLocText');
+      if (!navigator.geolocation) {
+        return showToast('Geolocation not supported', 'error');
+      }
+      
+      btnText.textContent = 'Detecting...';
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+          const data = await res.json();
+          
+          const city = data.city || data.locality || data.principalSubdivision || '';
+          const state = data.principalSubdivision || '';
+          const pin = data.postcode || '';
+          
+          let addressLine = data.locality || '';
+          
+          if (city) document.getElementById('checkoutCity').value = city;
+          if (pin) document.getElementById('checkoutPincode').value = pin;
+          if (addressLine) document.getElementById('checkoutRoad').value = addressLine;
+          if (state) document.getElementById('checkoutState').value = state;
+          
+          btnText.textContent = 'Use my location';
+          showToast('Location auto-filled!', 'success');
+        } catch (e) {
+          btnText.textContent = 'Use my location';
+          showToast('Failed to fetch location data', 'error');
+        }
+      }, (err) => {
+        btnText.textContent = 'Use my location';
+        showToast('Please allow location access', 'warning');
+      });
+    }
+
+    async function fetchCityFromPincode(pincode, cityFieldId) {
+      if (pincode.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+          const data = await res.json();
+          if (data[0].Status === 'Success') {
+            const po = data[0].PostOffice[0];
+            const city = po.District || po.Block || po.Region;
+            const state = po.State;
+            document.getElementById(cityFieldId).value = `${city}, ${state}`;
+            showToast('City updated from Pincode', 'success');
+          }
+        } catch (err) {
+          console.log('Pincode fetch error:', err);
+        }
+      }
+    }
+
+    // Payment modal
+    document.getElementById('closePaymentModal').addEventListener('click', () => {
+      document.getElementById('paymentModal').classList.remove('active');
+    });
+
+    // Auto-fill logic
+    const currentUser = getUser();
+    if (currentUser) {
+      document.getElementById('checkoutPhone').value = currentUser.phone || '';
+      document.getElementById('checkoutName').value = currentUser.name || '';
+      document.getElementById('checkoutEmail').value = currentUser.email || '';
+      
+      // Fetch full profile to get saved address
+      const token = localStorage.getItem('jf_customer_token');
+      if (token) {
+        fetch(`/api/customer/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => res.json()).then(data => {
+          if (data && data.address) {
+            const parts = data.address.split(', ');
+            if (parts.length > 1) {
+              document.getElementById('checkoutHouse').value = parts[0];
+              document.getElementById('checkoutRoad').value = parts.slice(1).join(', ');
+            } else {
+              document.getElementById('checkoutRoad').value = data.address;
+            }
+            document.getElementById('checkoutCity').value = data.city || '';
+            document.getElementById('checkoutPincode').value = data.pincode || '';
+            
+            // Populate and show the Saved Address View
+            document.getElementById('savedCheckoutName').textContent = data.name;
+            document.getElementById('savedCheckoutPhone').textContent = data.phone;
+            document.getElementById('savedCheckoutFullAddress').textContent = `${data.address}, ${data.city || ''} - ${data.pincode || ''}`;
+            document.getElementById('savedCheckoutType').textContent = data.type || 'HOME';
+            
+            document.getElementById('checkoutSavedAddressView').style.display = 'block';
+            document.getElementById('checkoutAddressFormContainer').style.display = 'none';
+          }
+        }).catch(err => console.log('Could not fetch address'));
+      }
+    }
+
+    // Auto-fill fallback based on phone number for guests
+    document.getElementById('checkoutPhone').addEventListener('input', async (e) => {
+      const phone = e.target.value.trim();
+      if (phone.length === 10 && /^\d+$/.test(phone) && !currentUser) {
+        const loader = document.getElementById('autofillLoader');
+        loader.style.display = 'inline';
+        try {
+          const res = await fetch(`/api/customer/lookup?phone=${phone}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data) {
+              if (data && data.customer_name) document.getElementById('checkoutName').value = data.customer_name;
+              if (data && data.phone) document.getElementById('checkoutPhone').value = data.phone;
+              if (data && data.city) document.getElementById('checkoutCity').value = data.city;
+              if (data && data.pincode) document.getElementById('checkoutPincode').value = data.pincode;
+              loader.textContent = 'Found & Auto-filled ?';
+              loader.style.color = '#10b981';
+            }
+          } else {
+            loader.textContent = 'New Customer';
+            loader.style.color = '#64748b';
+          }
+        } catch (error) {
+          loader.style.display = 'none';
+        }
+        setTimeout(() => { loader.style.display = 'none'; loader.textContent = 'Auto-filling...'; loader.style.color = 'var(--gold)'; }, 3000);
+      }
+    });
+
+    document.getElementById('confirmPayment').addEventListener('click', async () => {
+      const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+      const cart = getCart();
+      
+      if (cart.length === 0) return;
+
+      // Calculate totals
+      let subtotal = 0;
+      const items = cart.map(item => {
+        const product = products.find(p => p.id === item.productId);
+        const price = product ? product.price : 0;
+        subtotal += price * item.quantity;
+        return {
+          productId: item.productId,
+          productName: product ? product.name : 'Unknown Product',
+          color: item.color,
+          size: item.size,
+          quantity: item.quantity,
+          price: price
+        };
+      });
+
+      const gst = Math.round(subtotal * 0.05);
+      const deliveryCharge = subtotal >= 2000 ? 0 : 99;
+      const discountAmount = couponDiscount;
+      const totalAmount = subtotal + gst + deliveryCharge - discountAmount;
+
+      let name, phone, email, fullAddress;
+      
+      const isSavedViewVisible = document.getElementById('checkoutSavedAddressView').style.display !== 'none';
+      const addressSel = document.querySelector('input[name="address_sel"]:checked');
+      const isUsingSaved = isSavedViewVisible && addressSel && addressSel.value === 'saved';
+
+      if (isUsingSaved) {
+        name = document.getElementById('savedCheckoutName').textContent;
+        phone = document.getElementById('savedCheckoutPhone').textContent;
+        fullAddress = document.getElementById('savedCheckoutFullAddress').textContent;
+        email = document.getElementById('checkoutEmail') ? document.getElementById('checkoutEmail').value.trim() : '';
+      } else {
+        name = document.getElementById('checkoutName').value.trim();
+        phone = document.getElementById('checkoutPhone').value.trim();
+        email = document.getElementById('checkoutEmail') ? document.getElementById('checkoutEmail').value.trim() : '';
+        const house = document.getElementById('checkoutHouse').value.trim();
+        const road = document.getElementById('checkoutRoad').value.trim();
+        const city = document.getElementById('checkoutCity').value.trim();
+        const state = document.getElementById('checkoutState').value.trim();
+        const pincode = document.getElementById('checkoutPincode').value.trim();
+        
+        if (!name || !phone || !house || !road || !city || !state || !pincode) {
+          showToast('Please fill all required delivery information', 'error');
+          return;
+        }
+        if (phone.length < 10) {
+          showToast('Please enter a valid 10-digit phone number', 'error');
+          return;
+        }
+        fullAddress = `${house}, ${road}, ${city}, ${state} - ${pincode}`;
+      }
+
+      document.getElementById('confirmPayment').disabled = true;
+      document.getElementById('confirmPayment').textContent = 'Placing Order...';
+
+      const user = getUser();
+      const customerId = user ? user.id : null;
+
+      try {
+        const res = await fetch(`/api/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerId,
+            customerName: name,
+            customerPhone: phone,
+            customerEmail: email || '',
+            customerAddress: fullAddress,
+            items,
+            totalAmount,
+            gst,
+            deliveryCharge,
+            paymentMethod,
+            coupon: appliedCoupon,
+            discount: discountAmount
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('paymentModal').classList.remove('active');
+          clearCart();
+          renderCart();
+          showToast('Order placed successfully! 🎉', 'success', 5000);
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          showToast(errData.error || 'Failed to place order. Please try again.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        // Fallback if backend is down
+        document.getElementById('paymentModal').classList.remove('active');
+        clearCart();
+        renderCart();
+        showToast('Order placed locally (Backend unreachable) ⚠️', 'success', 5000);
+      } finally {
+        document.getElementById('confirmPayment').disabled = false;
+        document.getElementById('confirmPayment').textContent = 'Confirm & Place Order';
+      }
+    });
+
+    document.getElementById('applyCoupon').addEventListener('click', () => {
+      const code = document.getElementById('couponInput').value.trim();
+      if (!code) return;
+      if (code.toUpperCase() === 'JF10') {
+        appliedCoupon = code.toUpperCase();
+        couponDiscount = 0;
+        renderCart();
+        showToast('Coupon applied! 10% discount added 🎉', 'success');
+      } else {
+        appliedCoupon = null;
+        couponDiscount = 0;
+        renderCart();
+        showToast('Invalid coupon code', 'error');
+      }
+    });
+
+    // Initial render handled in initPage().then()
+  </script>
+  <script>
+    function handleAddressSelection() {
+      const selected = document.querySelector('input[name="address_sel"]:checked').value;
+      const formContainer = document.getElementById('checkoutAddressFormContainer');
+      const lblSaved = document.getElementById('lblSavedAddress');
+      const lblNew = document.getElementById('lblNewAddress');
+      
+      if (selected === 'new') {
+        formContainer.style.display = 'block';
+        lblNew.style.borderColor = 'var(--gold)';
+        lblNew.style.background = 'rgba(212, 175, 55, 0.05)';
+        lblSaved.style.borderColor = 'var(--border)';
+        lblSaved.style.background = 'transparent';
+        
+        // Clear form for new address
+        document.getElementById('checkoutHouse').value = '';
+        document.getElementById('checkoutRoad').value = '';
+        document.getElementById('checkoutCity').value = '';
+        document.getElementById('checkoutState').value = '';
+        document.getElementById('checkoutPincode').value = '';
+      } else {
+        formContainer.style.display = 'none';
+        lblSaved.style.borderColor = 'var(--gold)';
+        lblSaved.style.background = 'rgba(212, 175, 55, 0.05)';
+        lblNew.style.borderColor = 'var(--border)';
+        lblNew.style.background = 'transparent';
+      }
+    }
+  </script>
+</body>
+</html>

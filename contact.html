@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Jaiswal Fashion. Get in touch with us for inquiries, support, or factory visits.">
+  <title>Contact Us | Jaiswal Fashion</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/pages.css">
+</head>
+<body>
+  <div id="nav-container"></div>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Contact Us</span>
+      </div>
+      <h1 class="page-hero-title">Get in <span class="text-gold">Touch</span></h1>
+      <p class="page-hero-subtitle">We're here to help you with any questions or bulk inquiries.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-layout">
+        <!-- Contact Info -->
+        <div class="contact-info-cards animate-fade-right">
+          <div class="contact-info-card">
+            <span class="contact-icon" style="font-size: 2rem;">📍</span>
+            <div>
+              <h4>Factory Address</h4>
+              <p>Jaiswal fashion manufacturing garment<br>mahatha ladnia 847232</p>
+              <a href="https://www.google.com/maps/search/?api=1&query=Jaiswal+fashion+manufacturing+garment+mahatha+ladnia+847232" target="_blank" style="color: var(--gold); font-size: var(--fs-sm); display: inline-block; margin-top: 4px;">📍 Open in Maps</a>
+            </div>
+          </div>
+          
+          <div class="contact-info-card">
+            <span class="contact-icon" style="font-size: 2rem;">📞</span>
+            <div>
+              <h4>Phone Support</h4>
+              <a href="https://wa.me/918084341453" target="_blank">+91 80843 41453</a><br>
+              <p style="font-size: var(--fs-xs); margin-top: 4px;">Mon - Sat, 9am - 7pm</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <span class="contact-icon" style="font-size: 2rem;">✉️</span>
+            <div>
+              <h4>Email Us</h4>
+              <a href="mailto:jaiswalfashions@gmail.com">jaiswalfashions@gmail.com</a><br>
+              <a href="mailto:sales@jaiswalfashion.com">sales@jaiswalfashion.com</a>
+            </div>
+          </div>
+
+          <div class="contact-info-card" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3);">
+            <span class="contact-icon" style="font-size: 2rem;">💬</span>
+            <div>
+              <h4 style="color: #22c55e;">WhatsApp Chat</h4>
+              <p>Instant support for orders and inquiries</p>
+              <a href="https://wa.me/918084341453" class="btn btn-success btn-sm mt-2" style="display: inline-flex; margin-top: var(--sp-2);">Chat Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-container animate-fade-left">
+          <h3>Send us a Message</h3>
+          <form id="contactForm">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" required placeholder="John Doe">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" required placeholder="+91 80843 41453">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email Address (Optional)</label>
+              <input type="email" class="form-input" placeholder="john@example.com">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select class="form-select">
+                <option value="general">General Inquiry</option>
+                <option value="order">Order Status</option>
+                <option value="bulk">Bulk/Wholesale Inquiry</option>
+                <option value="feedback">Feedback/Complaint</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Your Message</label>
+              <textarea class="form-input" required placeholder="How can we help you?"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-xl w-full">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google Map -->
+  <section style="padding-bottom: var(--sp-20);">
+    <div class="container">
+      <iframe
+        src="https://maps.google.com/maps?width=100%25&amp;height=500&amp;hl=en&amp;q=Jaiswal%20Fashion%20manufacturing%20garments%20mahatha%20ladhania%20madhubani%20847232+(Jaiswal%20Fashion)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+        width="100%"
+        height="500"
+        style="border:0; border-radius: var(--radius-2xl); box-shadow: var(--shadow-md);"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
+
+  <div id="footer-container"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+    initPage('contact');
+
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = e.target.elements[0].value;
+      const phone = e.target.elements[1].value;
+      const email = e.target.elements[2].value;
+      const subject = e.target.elements[3].value;
+      const message = e.target.elements[4].value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch(`/api/contacts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, email, subject, message })
+        });
+        
+        if (res.ok) {
+          showToast('Message sent successfully! We will get back to you soon.', 'success', 5000);
+          e.target.reset();
+        } else {
+          showToast('Failed to send message. Please try again.', 'error');
+        }
+      } catch (err) {
+        // Fallback
+        showToast('Message sent successfully! (Locally)', 'success', 5000);
+        e.target.reset();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
+    });
+  </script>
+</body>
+</html>

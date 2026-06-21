@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Login to your Jaiswal Fashion account to track orders, manage favorites, and speed up checkout.">
+  <title>Login / Register | Jaiswal Fashion</title>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/login.css">
+</head>
+
+<body>
+  <div id="nav-container"></div>
+
+  <!-- Loading Overlay -->
+  <div id="otpLoadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
+    <div style="width:60px; height:60px; border:4px solid rgba(232,185,74,0.2); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
+    <p style="color:var(--gold); margin-top:20px; font-size:18px; font-weight:600; letter-spacing:0.5px;">Sending OTP, please wait...</p>
+    <p style="color:var(--text-muted); margin-top:8px; font-size:14px;">Checking email validity</p>
+  </div>
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <main class="login-page">
+    <div class="login-container">
+      <div class="login-visual">
+        <div class="login-brand">
+          <div class="brand-logo" style="width: 60px; height: 60px; overflow:hidden; border-radius:50%;"><img src="./image/logo.jpeg" alt="Jaiswal Fashion" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div>
+            <h2 class="login-brand-name">JAISWAL <span class="text-gold">FASHION</span></h2>
+            <p>Madhubani, Bihar</p>
+          </div>
+        </div>
+        <div class="login-visual-content">
+          <h3>Welcome!</h3>
+          <p>Secure login with Email OTP. No passwords to remember!</p>
+          <div class="login-features">
+            <div class="login-feature"><span class="feature-icon">🏭</span> Direct Factory Prices</div>
+            <div class="login-feature"><span class="feature-icon">📦</span> Easy Order Tracking</div>
+            <div class="login-feature"><span class="feature-icon">🔒</span> Secure OTP Login</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-form-area">
+        <div class="login-form-container active" id="authFormContainer">
+          
+          <div class="login-tabs">
+            <button class="login-tab active" data-tab="login">Sign In</button>
+            <button class="login-tab" data-tab="register">Register</button>
+          </div>
+
+          <!-- LOGIN FORM -->
+          <form class="login-form active" id="loginRequestForm">
+            <h2 class="login-title" style="margin-top: 15px;">Welcome Back</h2>
+            <p class="login-subtitle">Enter your email to receive an OTP</p>
+            
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email address" required>
+              <div id="loginEmailError" style="display:none; color:#f87171; font-size:13px; margin-top:4px;"></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-xl w-full" id="sendLoginOtpBtn">Get OTP on Email</button>
+          </form>
+
+          <!-- REGISTER FORM -->
+          <form class="login-form" id="registerRequestForm">
+            <h2 class="login-title" style="margin-top: 15px;">Create Account</h2>
+            <p class="login-subtitle">Join us to access wholesale prices</p>
+
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" id="registerName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <div class="phone-input-group">
+                <span class="phone-prefix">+91</span>
+                <input type="tel" class="form-input" id="registerPhone" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="registerEmail" placeholder="Enter email address" required>
+              <div id="registerEmailError" style="display:none; color:#f87171; font-size:13px; margin-top:4px;"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-xl w-full" id="sendRegisterOtpBtn">Get OTP on Email</button>
+          </form>
+
+          <!-- OTP VERIFY FORM (Shared) -->
+          <form class="login-form" id="otpVerifyForm" style="display: none;">
+            <h2 class="login-title" style="margin-top: 15px;">Enter OTP</h2>
+            <p class="login-subtitle">Sent to <span id="otpSentTo"></span></p>
+            <p style="font-size:12px; color:#facc15; margin:-8px 0 12px; text-align:center; line-height:1.5;">
+              📬 Not received? Check your <strong>Spam / Junk</strong> folder!<br>
+              📬 OTP nahi mila? <strong>Spam</strong> folder check karein!
+            </p>
+
+          <div class="form-group">
+            <div class="otp-inputs" style="margin-top: 10px;">
+              <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric">
+              <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric">
+              <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric">
+              <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric">
+            </div>
+            <div id="otpWarning" style="display:none; color:#fbbf24; font-size:13px; margin:8px 0 4px; text-align:center;">
+              ⚠️ OTP nahi aaya? Apna email ID dubara check karein  — galat ho sakta hai.
+            </div>
+            <div class="otp-actions" style="margin-top: 15px; display: flex; justify-content: space-between;">
+                <button type="button" class="btn-ghost btn-sm" id="resendOtpBtn" disabled>Resend OTP <span id="otpTimer">(00:30)</span></button>
+                <button type="button" class="btn-ghost btn-sm" id="goBackBtn">Go Back</button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-xl w-full" id="verifyOtpBtn">Verify & Proceed</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Error Popup -->
+  <div id="otpErrorPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:36px 28px; max-width:380px; width:90%; text-align:center;">
+      <div style="width:60px; height:60px; background:rgba(248,113,113,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 18px;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <p style="color:var(--text-white); font-size:16px; line-height:1.6; margin-bottom:24px;">The email address you entered is invalid. Please check your email address and try again.</p>
+      <button id="errorPopupOkBtn" style="width:100%; padding:14px; background:var(--gold); border:none; border-radius:12px; color:#000; font-weight:700; font-size:15px; cursor:pointer;">OK</button>
+    </div>
+  </div>
+
+  <script src="./js/data.js?v=3"></script>
+  <script src="./js/utils.js?v=5"></script>
+  <script src="./js/main.js?v=3"></script>
+  <script>
+    initPage('login');
+
+    const loginRequestForm = document.getElementById('loginRequestForm');
+    const registerRequestForm = document.getElementById('registerRequestForm');
+    const otpVerifyForm = document.getElementById('otpVerifyForm');
+    
+    const sendLoginOtpBtn = document.getElementById('sendLoginOtpBtn');
+    const sendRegisterOtpBtn = document.getElementById('sendRegisterOtpBtn');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    
+    const goBackBtn = document.getElementById('goBackBtn');
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const tabs = document.querySelectorAll('.login-tab');
+    
+    let timerInterval;
+    let currentEmail = '';
+    let currentType = '';
+
+    // Tab Switching
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        loginRequestForm.classList.remove('active');
+        registerRequestForm.classList.remove('active');
+        otpVerifyForm.style.display = 'none';
+
+        if (tab.dataset.tab === 'login') {
+          loginRequestForm.classList.add('active');
+        } else {
+          registerRequestForm.classList.add('active');
+        }
+      });
+    });
+
+    // Email format validation
+    function isValidEmail(email) {
+      return /^[^\s@]+@gmail\.com$/i.test(email);
+    }
+
+    // Handle Login Request
+    loginRequestForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const errorDiv = document.getElementById('loginEmailError');
+      if (!isValidEmail(email)) {
+        errorDiv.textContent = 'Invalid email id, please check your email id';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      errorDiv.style.display = 'none';
+      await requestOtp(email, '', '', 'login', sendLoginOtpBtn);
+    });
+
+    // Handle Register Request
+    registerRequestForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value.trim();
+      const phone = document.getElementById('registerPhone').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const errorDiv = document.getElementById('registerEmailError');
+      if (!isValidEmail(email)) {
+        errorDiv.textContent = 'Invalid email id, please check your email id';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      errorDiv.style.display = 'none';
+      await requestOtp(email, phone, name, 'register', sendRegisterOtpBtn);
+    });
+
+    let pollInterval = null;
+
+    function pollEmailStatus(email) {
+      const maxAttempts = 15; // ~45 seconds max
+      let attempts = 0;
+
+      function check() {
+        attempts++;
+        fetch(`/api/auth/email-status?email=${encodeURIComponent(email)}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.status === 'verified') {
+              clearInterval(pollInterval);
+              document.getElementById('otpLoadingOverlay').style.display = 'none';
+              loginRequestForm.classList.remove('active');
+              registerRequestForm.classList.remove('active');
+              document.querySelector('.login-tabs').style.display = 'none';
+              otpVerifyForm.style.display = 'block';
+              otpInputs[0].focus();
+              startOtpTimer();
+              setTimeout(() => {
+                document.getElementById('otpWarning').style.display = 'block';
+              }, 10000);
+            } else if (data.status === 'bounced') {
+              clearInterval(pollInterval);
+              document.getElementById('otpLoadingOverlay').style.display = 'none';
+              document.getElementById('otpErrorPopup').style.display = 'flex';
+            } else if (attempts >= maxAttempts) {
+              clearInterval(pollInterval);
+              document.getElementById('otpLoadingOverlay').style.display = 'none';
+              document.getElementById('otpErrorPopup').style.display = 'flex';
+            }
+            // else still pending, keep polling
+          })
+          .catch(() => {
+            if (attempts >= maxAttempts) {
+              clearInterval(pollInterval);
+              document.getElementById('otpLoadingOverlay').style.display = 'none';
+              showToast('Server connection error', 'error');
+            }
+          });
+      }
+
+      pollInterval = setInterval(check, 3000);
+      check(); // do first check immediately
+    }
+
+    // Request OTP Function
+    async function requestOtp(email, phone, name, type, btn) {
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      document.getElementById('otpLoadingOverlay').style.display = 'flex';
+
+      try {
+        const res = await fetch(`/api/auth/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, phone, name, type })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          currentEmail = email;
+          currentType = type;
+          document.getElementById('otpSentTo').textContent = email;
+
+          // Reset OTP form
+          otpInputs.forEach(i => i.value = '');
+          clearInterval(timerInterval);
+          document.getElementById('otpWarning').style.display = 'none';
+          document.getElementById('resendOtpBtn').disabled = true;
+          document.getElementById('resendOtpBtn').querySelector('span').textContent = '(00:30)';
+
+          if (data.status === 'verified') {
+            document.getElementById('otpLoadingOverlay').style.display = 'none';
+            loginRequestForm.classList.remove('active');
+            registerRequestForm.classList.remove('active');
+            document.querySelector('.login-tabs').style.display = 'none';
+            otpVerifyForm.style.display = 'block';
+            otpInputs[0].focus();
+            startOtpTimer();
+            setTimeout(() => {
+              document.getElementById('otpWarning').style.display = 'block';
+            }, 10000);
+          } else {
+            // Start polling for email verification status
+            pollEmailStatus(email);
+          }
+        } else {
+          document.getElementById('otpLoadingOverlay').style.display = 'none';
+          const errorText = data.error || 'The email address you entered is invalid. Please check your email address and try again.';
+          document.querySelector('#otpErrorPopup p').textContent = errorText;
+          document.getElementById('otpErrorPopup').style.display = 'flex';
+        }
+      } catch (err) {
+        document.getElementById('otpLoadingOverlay').style.display = 'none';
+        showToast('Server connection error', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Get OTP on Email';
+      }
+    }
+
+    // Go Back
+    goBackBtn.addEventListener('click', () => {
+      clearInterval(pollInterval);
+      otpVerifyForm.style.display = 'none';
+      document.querySelector('.login-tabs').style.display = 'flex';
+      
+      clearInterval(timerInterval);
+      otpInputs.forEach(i => i.value = '');
+      document.getElementById('otpWarning').style.display = 'none';
+      document.getElementById('loginEmailError').style.display = 'none';
+      document.getElementById('loginEmailError').textContent = '';
+      document.getElementById('registerEmailError').style.display = 'none';
+      document.getElementById('registerEmailError').textContent = '';
+
+      if (currentType === 'login') {
+        loginRequestForm.classList.add('active');
+      } else {
+        registerRequestForm.classList.add('active');
+      }
+    });
+
+    // Auto-focus OTP inputs
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value && index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+
+    function startOtpTimer() {
+      let seconds = 30;
+      const resendBtn = document.getElementById('resendOtpBtn');
+      const timerSpan = document.getElementById('otpTimer');
+      resendBtn.disabled = true;
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        seconds--;
+        timerSpan.textContent = `(00:${seconds < 10 ? '0' : ''}${seconds})`;
+        if (seconds <= 0) {
+          clearInterval(timerInterval);
+          resendBtn.disabled = false;
+          timerSpan.textContent = '';
+        }
+      }, 1000);
+    }
+
+    // Handle Verify OTP
+    otpVerifyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const otp = Array.from(otpInputs).map(i => i.value).join('');
+      
+      if (otp.length !== 4) {
+        showToast('Please enter complete 4-digit OTP', 'error');
+        return;
+      }
+
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch(`/api/auth/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentEmail, otp })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          localStorage.setItem('jf_customer_token', data.token);
+          setUser(data.customer);
+          showToast(`Welcome, ${data.customer.name}! 🎉`, 'success');
+          
+          await syncFavorites(data.token);
+          
+          setTimeout(() => {
+            const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || 'index.html';
+            window.location.href = returnUrl;
+          }, 1000);
+        } else {
+          showToast(data.error || 'Invalid OTP', 'error');
+          otpInputs.forEach(i => i.value = '');
+          otpInputs[0].focus();
+        }
+      } catch (err) {
+        showToast('Server connection error', 'error');
+      } finally {
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.textContent = 'Verify & Proceed';
+      }
+    });
+
+    async function syncFavorites(token) {
+      try {
+        const res = await fetch(`/api/customer/favorites`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const favs = await res.json();
+          saveToStorage('jf_favorites', favs);
+          updateFavBadge();
+        }
+      } catch (e) {
+        console.error('Failed to sync favorites', e);
+      }
+    }
+
+    // Error popup OK button
+    document.getElementById('errorPopupOkBtn').addEventListener('click', () => {
+      clearInterval(pollInterval);
+      document.getElementById('otpErrorPopup').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
