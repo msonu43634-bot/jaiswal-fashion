@@ -11,10 +11,12 @@ router.post('/api/webhooks/shiprocket', (req, res) => {
     const rawBody = JSON.stringify(req.body);
     const expected = crypto.createHmac('sha256', webhookSecret).update(rawBody).digest('hex');
     const provided = signature.toLowerCase().replace(/^sha256=/i, '');
-    if (!provided || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided))) {
+    if (!provided || expected.length !== provided.length || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided))) {
       console.warn('[Webhook/Shiprocket] Invalid signature, rejecting');
       return res.status(401).json({ error: 'Invalid webhook signature' });
     }
+  } else {
+    console.warn('[Webhook/Shiprocket] ⚠️  WEBHOOK_SECRET not set — signature verification is DISABLED. Anyone can send fake tracking updates. Set WEBHOOK_SECRET in Environment Variables to secure this endpoint.');
   }
 
   res.status(200).json({ received: true });

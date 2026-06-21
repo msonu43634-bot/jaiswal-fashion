@@ -19,6 +19,12 @@ const bulkOrderLimiter = rateLimit({
   message: { error: 'Too many bulk order requests. Please try again after 1 hour.' }
 });
 
+const bulukOrderLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many bulk order requests. Please try again after 1 hour.' }
+});
+
 router.get('/api/contacts', requireAdmin, (req, res) => {
   const db = getDb();
   const contacts = db.prepare('SELECT * FROM contacts ORDER BY created_at DESC').all();
@@ -73,7 +79,7 @@ router.delete('/api/bulk-orders/:id', requireAdmin, requireCSRF, (req, res) => {
   res.json({ success: true });
 });
 
-router.post('/api/buluk-orders', (req, res) => {
+router.post('/api/buluk-orders', bulukOrderLimiter, (req, res) => {
   const db = getDb();
   const { shopName, contactPerson, phone, address, city, notes, items } = req.body;
   if (!shopName || !contactPerson || !phone || !items || !items.length) {

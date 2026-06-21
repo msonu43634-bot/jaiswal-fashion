@@ -3,11 +3,18 @@ const router = Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const rateLimit = require('express-rate-limit');
 
 const { getDb } = require('../db');
 const { sanitize, deepSanitize } = require('../middleware/sanitize');
 const { requireAdmin, requireCustomer, requireCSRF } = require('../middleware/auth');
 const { encrypt, decrypt, deterministicHash } = require('../crypto-utils');
+
+const reviewLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many reviews submitted. Please try again after 1 hour.' }
+});
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 
@@ -23,9 +30,13 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
+    let ext = path.extname(file.originalname).toLowerCase();
+    // Only allow known-safe extensions; strip anything else (blocks path traversal / double extensions)
+    if (!/^\.(jpe?g|png|gif|webp)$/.test(ext)) ext = '.jpg';
     const safeColor = req.params.colorName ? req.params.colorName.replace(/[^a-zA-Z0-9]/g, '') : 'default';
-    const name = `${req.params.productId || 'product'}_${req.params.angle || 'front'}_${safeColor}_${Date.now()}${ext}`;
+    const safeProductId = String(req.params.productId || 'product').replace(/[^a-zA-Z0-9]/g, '');
+    const safeAngle = String(req.params.angle || 'front').replace(/[^a-zA-Z0-9]/g, '');
+    const name = `${safeProductId}_${safeAngle}_${safeColor}_${Date.now()}${ext}`;
     cb(null, name);
   }
 });
@@ -172,7 +183,7 @@ router.get('/api/products/:productId/images', (req, res) => {
   res.json(images);
 });
 
-router.post('/api/products/:productId/reviews', (req, res) => {
+router.post('/api/products/:productId/reviews', reviewLimiter, (req, res) => {
   const db = getDb();
   const { customer_name, rating, comment } = req.body;
   if (!customer_name || !rating || rating < 1 || rating > 5) {

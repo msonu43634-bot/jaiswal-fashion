@@ -11,6 +11,17 @@ const { requireAdmin, requireCustomer, requireCSRF } = require('../middleware/au
 const { getEmailConfig, createTransporter, sendSecurityAlert, startBounceCheck, otpStorage, emailVerificationStatus } = require('../services/email');
 const { OTP_FROM_NAME, OTP_FROM_EMAIL } = require('../config');
 
+function safeOtpCompare(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) {
+    crypto.timingSafeEqual(bufA, bufA);
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -81,7 +92,7 @@ router.post('/api/auth/send-otp', otpSendLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Invalid request type' });
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
   otpStorage.set(email, {
     otp,
@@ -156,7 +167,7 @@ router.post('/api/auth/verify-otp', otpLimiter, (req, res) => {
 
   const storedData = otpStorage.get(email);
   if (!storedData) return res.status(400).json({ error: 'OTP expired or invalid' });
-  if (storedData.otp !== otp) return res.status(400).json({ error: 'Incorrect OTP' });
+  if (!safeOtpCompare(storedData.otp, otp)) return res.status(400).json({ error: 'Incorrect OTP' });
   if (Date.now() > storedData.expires) {
     otpStorage.delete(email);
     return res.status(400).json({ error: 'OTP has expired' });
@@ -220,8 +231,6 @@ router.post('/api/admin/login', loginLimiter, async (req, res) => {
     return res.status(401).json({ error: 'Invalid username or password' });
   }
 
-  accountLockouts.delete('admin_' + username);
-
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   otpStorage.set('admin_login_' + username, {
@@ -280,7 +289,7 @@ router.post('/api/admin/verify-login', adminOtpLimiter, (req, res) => {
     return res.status(400).json({ error: 'OTP expired' });
   }
 
-  if (stored.otp !== otp) {
+  if (!safeOtpCompare(stored.otp, otp)) {
     return res.status(400).json({ error: 'Invalid OTP' });
   }
 

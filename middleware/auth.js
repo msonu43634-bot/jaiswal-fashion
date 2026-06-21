@@ -27,9 +27,21 @@ function requireCustomer(req, res, next) {
   next();
 }
 
+function safeCompare(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) {
+    // still run a comparison of equal length to keep timing consistent
+    crypto.timingSafeEqual(bufA, bufA);
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 function requireCSRF(req, res, next) {
   const token = req.headers['x-admin-token'];
-  if (req.session && req.session.csrfToken && token === req.session.csrfToken) {
+  if (req.session && req.session.csrfToken && safeCompare(token, req.session.csrfToken)) {
     return next();
   }
   if (req.session && req.session.admin) {

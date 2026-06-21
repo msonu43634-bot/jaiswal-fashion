@@ -15,6 +15,7 @@ const { startAutoShipScheduler } = require('./services/shiprocket');
 const { PORT, isProd, ADMIN_PATH, SESSION_SECRET, SESSION_TTL } = require('./config');
 
 const app = express();
+app.set('trust proxy', true);
 
 initDb();
 
@@ -87,7 +88,11 @@ app.use(cors({
     const db = getDb();
     const row = db.prepare('SELECT value FROM settings WHERE key = ?').get('site_url');
     const allowedOrigin = row ? row.value.replace(/\/+$/, '') : (process.env.DOMAIN_URL || '');
-    if (!allowedOrigin || origin.startsWith(allowedOrigin)) return callback(null, true);
+    if (!allowedOrigin) {
+      console.warn('⚠️  No site_url configured — rejecting cross-origin request from', origin, '. Set site_url in Admin Settings.');
+      return callback(null, false);
+    }
+    if (origin.startsWith(allowedOrigin)) return callback(null, true);
     callback(null, false);
   },
   credentials: true

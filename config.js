@@ -10,6 +10,14 @@ const OTP_FROM_NAME = process.env.OTP_FROM_NAME || 'Jaiswal Fashion';
 const OTP_FROM_EMAIL = process.env.OTP_FROM_EMAIL || 'msonu43634@gmail.com';
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || '';
 
+if (isProd && !ENCRYPTION_KEY) {
+  console.error('\n🔴 FATAL: ENCRYPTION_KEY is not set in environment variables.');
+  console.error('   Customer addresses, contact messages, and other sensitive data CANNOT be encrypted/decrypted without it.');
+  console.error('   Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  console.error('   Then set it as an Environment Variable named ENCRYPTION_KEY.\n');
+  process.exit(1);
+}
+
 const ALLOWED_SETTINGS_KEYS = [
   'payment_methods', 'shiprocket_config', 'site_name', 'site_description',
   'show_bulk_section', 'buluk_enabled', 'show_stats', 'show_categories',
