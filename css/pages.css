@@ -221,8 +221,7 @@
   }
 
   .about-image img {
-    aspect-ratio: auto;
-    height: auto;
+    aspect-ratio: 16/9 !important;
   }
 
   .capabilities-grid {
