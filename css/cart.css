@@ -1,0 +1,294 @@
+/* ======================================================
+   JAISWAL FASHION — Cart Page Styles
+   ====================================================== */
+
+.cart-page-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-4xl);
+  font-weight: 800;
+  margin-bottom: var(--sp-8);
+}
+
+/* ==================== CART LAYOUT ==================== */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--sp-8);
+  align-items: start;
+}
+
+/* ==================== CART ITEMS ==================== */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  align-items: center;
+  transition: border-color var(--ease-fast);
+}
+
+.cart-item:hover {
+  border-color: var(--border-light);
+}
+
+.cart-item-image {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.cart-item-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-white);
+  text-decoration: none;
+  transition: color var(--ease-fast);
+}
+
+.cart-item-name:hover {
+  color: var(--gold-light);
+}
+
+.cart-item-meta {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.cart-meta-tag {
+  padding: var(--sp-1) var(--sp-2);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.cart-item-price-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.cart-item-price {
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.cart-item-original {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-3);
+}
+
+.cart-item-total {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.cart-remove-btn {
+  color: var(--text-muted) !important;
+}
+
+.cart-remove-btn:hover {
+  color: var(--error) !important;
+}
+
+/* ==================== SUMMARY CARD ==================== */
+.summary-card {
+  position: sticky;
+  top: 100px;
+  padding: var(--sp-8);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+}
+
+.summary-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  margin-bottom: var(--sp-6);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--sp-2) 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.summary-row.total {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--text-white);
+  padding: var(--sp-4) 0 var(--sp-2);
+}
+
+.summary-row.savings {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.summary-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--sp-3) 0;
+}
+
+.free-delivery-msg {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: var(--sp-1);
+}
+
+/* ==================== PAYMENT MODAL ==================== */
+.payment-modal-content {
+  max-width: 550px;
+}
+
+.payment-modal-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  margin-bottom: var(--sp-6);
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.payment-option {
+  cursor: pointer;
+}
+
+.payment-option input {
+  display: none;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--bg-glass);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  transition: all var(--ease-fast);
+}
+
+.payment-option input:checked + .payment-option-card {
+  border-color: var(--gold);
+  background: var(--gold-subtle);
+}
+
+.payment-option:hover .payment-option-card {
+  border-color: var(--border-light);
+}
+
+.payment-opt-icon {
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-glass-strong);
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.payment-option h4 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-white);
+  margin-bottom: 2px;
+}
+
+.payment-option p {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.coupon-section {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.coupon-section h4 {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  margin-bottom: var(--sp-3);
+}
+
+.coupon-input-group {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.coupon-input-group .form-input {
+  flex: 1;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .cart-item {
+    grid-template-columns: 80px 1fr;
+    gap: var(--sp-3);
+  }
+
+  .cart-item-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cart-page-title {
+    font-size: var(--fs-3xl);
+  }
+}

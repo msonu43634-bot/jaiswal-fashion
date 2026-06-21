@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Jaiswal Fashion</title>
+  <base href="/admin/">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar overlay for mobile -->
+  <div id="sidebarOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99; display:none; -webkit-tap-highlight-color:transparent;"></div>
+
+  <!-- ==================== LOGIN PAGE ==================== -->
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-brand-icon" style="overflow:hidden; border-radius:50%;"><img src="../image/logo.jpeg" alt="Jaiswal Fashion" style="width:100%;height:100%;object-fit:cover;"></div>
+        <h1>JAISWAL <span>FASHION</span></h1>
+        <p>Admin Panel — Control Center</p>
+      </div>
+      <div class="login-error" id="loginError">Invalid username or password</div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="loginUsername" placeholder="admin" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="loginBtn" class="btn btn-primary" style="width:100%; justify-content:center; padding: 14px;">
+          🔐 Login to Dashboard
+        </button>
+      </form>
+      
+      <form id="otpForm" style="display:none;">
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">
+          A 6-digit OTP has been sent to the master admin email.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Enter OTP</label>
+          <input type="text" class="form-input" id="loginOtp" placeholder="123456" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 5px;" required>
+        </div>
+        <button type="submit" id="verifyOtpBtn" class="btn btn-primary" style="width:100%; justify-content:center; padding: 14px;">
+          ✓ Verify & Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN DASHBOARD ==================== -->
+  <div class="admin-layout" id="adminLayout" style="display:none;">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon" style="overflow:hidden; border-radius:50%;"><img src="../image/logo.jpeg" alt="Jaiswal Fashion" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div style="flex:1;">
+          <h2>JAISWAL <span>FASHION</span></h2>
+          <div class="sidebar-brand-sub">Admin Panel</div>
+        </div>
+        <button id="sidebarCloseBtn" class="btn-icon" style="display:none; width:32px; height:32px; font-size:16px; border:none; color:var(--text-secondary); background:var(--bg-glass); border-radius:8px; cursor:pointer;">✕</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Main</div>
+        <button class="sidebar-link active" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+
+        <div class="sidebar-section-title">Management</div>
+        <button class="sidebar-link" data-page="products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Products
+        </button>
+        <button class="sidebar-link" data-page="buluk-products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Bulk Products
+        </button>
+        <button class="sidebar-link" data-page="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Orders
+          <span class="badge" id="ordersBadge" style="display:none">0</span>
+        </button>
+        <button class="sidebar-link" data-page="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Customers
+        </button>
+        <button class="sidebar-link" data-page="bulk-orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          Bulk Enquiry
+          <span class="badge" id="bulkOrdersBadge" style="display:none">0</span>
+        </button>
+        <button class="sidebar-link" data-page="buluk-orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Bulk Orders
+          <span class="badge" id="bulukOrdersBadge" style="display:none">0</span>
+        </button>
+        <button class="sidebar-link" data-page="payments">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Payments
+        </button>
+        <button class="sidebar-link" data-page="testimonials">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Testimonials
+        </button>
+        <button class="sidebar-link" data-page="contacts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Contacts
+          <span class="badge" id="contactsBadge" style="display:none">0</span>
+        </button>
+        <button class="sidebar-link" data-page="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-link" id="logoutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-icon mobile-menu-btn" id="menuBtn">☰</button>
+          <span class="topbar-title" id="pageTitle">Dashboard</span>
+        </div>
+        <div class="topbar-actions">
+          <span style="font-size:13px; color:var(--text-muted);" id="adminName">Admin</span>
+        </div>
+      </div>
+
+      <div class="page-content" id="pageContent">
+        <!-- Pages rendered here by JS -->
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== PRODUCT MODAL ==================== -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content" style="max-width:800px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="productModalTitle">Add New Product</h3>
+        <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <input type="hidden" id="pf_editId">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Product Name *</label>
+              <input type="text" class="form-input" id="pf_name" required placeholder="Classic Round Neck T-Shirt">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="pf_category" required>
+                <option value="tshirt">T-Shirts</option>
+                <option value="lower">Lowers</option>
+                <option value="halfpant">Half Pants</option>
+                <option value="jacket">Jackets</option>
+                <option value="hoodie">Hoodies</option>
+                <option value="kurta">Kurtas</option>
+                <option value="buluk">Bulk Order Only</option>
+                <option value="sweater">Sweaters</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Selling Price (₹) *</label>
+              <input type="number" class="form-input" id="pf_price" required placeholder="349">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Original Price (₹) *</label>
+              <input type="number" class="form-input" id="pf_originalPrice" required placeholder="599">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge</label>
+              <select class="form-select" id="pf_badge">
+                <option value="">None</option>
+                <option value="Bestseller">Bestseller</option>
+                <option value="New">New</option>
+                <option value="Trending">Trending</option>
+                <option value="Popular">Popular</option>
+                <option value="Premium">Premium</option>
+                <option value="Exclusive">Exclusive</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="pf_description" rows="3" placeholder="Product description..."></textarea>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Material</label>
+              <input type="text" class="form-input" id="pf_material" placeholder="100% Cotton, 180 GSM">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fit</label>
+              <select class="form-select" id="pf_fit">
+                <option value="Regular Fit">Regular Fit</option>
+                <option value="Slim Fit">Slim Fit</option>
+                <option value="Relaxed Fit">Relaxed Fit</option>
+                <option value="Athletic Fit">Athletic Fit</option>
+                <option value="Oversized">Oversized</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Wash Care</label>
+              <input type="text" class="form-input" id="pf_washCare" placeholder="Machine wash cold">
+            </div>
+          </div>
+
+          <!-- COLORS -->
+          <div class="form-group">
+            <label class="form-label">Colors</label>
+            <div class="color-list" id="pf_colorList"></div>
+            <div style="display:flex; gap:8px; margin-top:10px; align-items:end;">
+              <div style="flex:1;">
+                <input type="text" class="form-input" id="pf_newColorName" placeholder="Color name (e.g. Navy Blue)" style="font-size:13px;">
+              </div>
+              <div>
+                <input type="color" id="pf_newColorHex" value="#1e3a5f" style="width:44px; height:40px; border:none; border-radius:8px; cursor:pointer;">
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addColor()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- SIZES -->
+          <div class="form-group">
+            <label class="form-label">Sizes</label>
+            <div class="size-list" id="pf_sizeList"></div>
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <select class="form-select" id="pf_newSize" style="width:120px; font-size:13px;">
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M" selected>M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+                <option value="3XL">3XL</option>
+                <option value="Free Size">Free Size</option>
+              </select>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addSize()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- PRODUCT IMAGES - 4 ANGLES (PER COLOR) -->
+          <div class="form-group">
+            <label class="form-label">📸 Product Photos (4 Angles per Color)</label>
+            <div style="margin-bottom: 12px;">
+              <select id="pf_imageColorSelect" class="form-select" style="font-size: 13px;" onchange="loadImagesForSelectedColor()">
+                <option value="">-- Select Color First --</option>
+              </select>
+            </div>
+            <div class="image-upload-grid" id="pf_imageGrid" style="opacity: 0.5; pointer-events: none;">
+              <div class="image-upload-box" data-angle="front" onclick="triggerImageUpload(this)">
+                <input type="file" accept="image/*" onchange="previewImage(this)">
+                <span class="upload-icon">📷</span>
+                <span class="upload-label">Front View</span>
+                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
+              </div>
+              <div class="image-upload-box" data-angle="back" onclick="triggerImageUpload(this)">
+                <input type="file" accept="image/*" onchange="previewImage(this)">
+                <span class="upload-icon">📷</span>
+                <span class="upload-label">Back View</span>
+                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
+              </div>
+              <div class="image-upload-box" data-angle="left" onclick="triggerImageUpload(this)">
+                <input type="file" accept="image/*" onchange="previewImage(this)">
+                <span class="upload-icon">📷</span>
+                <span class="upload-label">Left Side</span>
+                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
+              </div>
+              <div class="image-upload-box" data-angle="right" onclick="triggerImageUpload(this)">
+                <input type="file" accept="image/*" onchange="previewImage(this)">
+                <span class="upload-icon">📷</span>
+                <span class="upload-label">Right Side</span>
+                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="display:flex; align-items:center; gap:20px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <input type="checkbox" id="pf_inStock" checked style="width:18px;height:18px;accent-color:var(--gold);">
+              <label for="pf_inStock" style="font-size:14px; cursor:pointer;">In Stock</label>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; background: rgba(255, 69, 0, 0.1); padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255, 69, 0, 0.3);">
+              <input type="checkbox" id="pf_isBulk" style="width:18px;height:18px;accent-color:#ff4500;">
+              <label for="pf_isBulk" style="font-size:14px; cursor:pointer; color: #ff4500; font-weight: 500;">Is Bulk Product? (Min Qty: 20)</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('productModal')">Cancel</button>
+        <button class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">💾 Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ORDER DETAIL MODAL ==================== -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Details</h3>
+        <button class="modal-close" onclick="closeModal('orderModal')">✕</button>
+      </div>
+      <div class="modal-body" id="orderDetailContent"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOMER DETAIL MODAL ==================== -->
+  <div class="modal-overlay" id="customerModal">
+    <div class="modal-content" style="max-width:800px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Customer Folder</h3>
+        <button class="modal-close" onclick="closeModal('customerModal')">✕</button>
+      </div>
+      <div class="modal-body" id="customerDetailContent" style="max-height:70vh; overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+  <script>
+    // CSRF protection: auto-add X-Admin-Token header to all API fetch calls
+    let ADMIN_CSRF_TOKEN = null;
+    (async function initCSRF() {
+      try {
+        const res = await fetch('/api/admin/csrf-token', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          ADMIN_CSRF_TOKEN = data.token;
+        }
+      } catch(e) {}
+    })();
+    // Override fetch to add CSRF header for admin API calls
+    const origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+      opts = opts || {};
+      opts.credentials = opts.credentials || 'include';
+      if (ADMIN_CSRF_TOKEN && typeof url === 'string' && url.startsWith('/api/admin')) {
+        opts.headers = opts.headers || {};
+        opts.headers['X-Admin-Token'] = ADMIN_CSRF_TOKEN;
+      }
+      return origFetch.call(window, url, opts);
+    };
+  </script>
+  <script src="js/admin/utils.js"></script>
+  <script src="js/admin/navigation.js"></script>
+  <script src="js/admin/auth.js"></script>
+  <script src="js/admin/dashboard.js"></script>
+  <script src="js/admin/customers.js"></script>
+  <script src="js/admin/products.js"></script>
+  <script src="js/admin/orders.js"></script>
+  <script src="js/admin/payments.js"></script>
+  <script src="js/admin/contacts.js"></script>
+  <script src="js/admin/settings.js"></script>
+</body>
+</html>
