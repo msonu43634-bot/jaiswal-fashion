@@ -15,7 +15,7 @@ const { startAutoShipScheduler } = require('./services/shiprocket');
 const { PORT, isProd, ADMIN_PATH, SESSION_SECRET, SESSION_TTL } = require('./config');
 
 const app = express();
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 initDb();
 
