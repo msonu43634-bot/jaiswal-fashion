@@ -29,7 +29,12 @@ app.use((req, res, next) => {
 });
 app.use(express.static(siteDir, {
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    const ext = require('path').extname(filePath).toLowerCase();
+    if (ext === '.html') {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    } else if (['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    }
   }
 }));
 
