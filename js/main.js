@@ -36,6 +36,20 @@ async function initPage(activePage = '') {
     navContainer.innerHTML = getNavbarHTML(activePage);
   }
 
+  // Inject mobile menu (outside navbar to avoid backdrop-filter containing block issue)
+  const mobileMenu = document.createElement('ul');
+  mobileMenu.className = 'navbar-links mobile-nav-overlay';
+  mobileMenu.id = 'mobileNavLinks';
+  mobileMenu.innerHTML = `
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li id="mobileNavProductsLink"><a href="products.html">Products</a></li>
+    <li id="mobileNavBulukLink"><a href="bulk-product.html">Bulk Order Only</a></li>
+    <li><a href="bulk-orders.html">Bulk Enquiries</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  `;
+  navContainer.parentNode.insertBefore(mobileMenu, navContainer.nextSibling);
+
   // Show/hide Products nav link based on settings
   fetch('/api/settings')
     .then(r => r.json())
@@ -43,6 +57,8 @@ async function initPage(activePage = '') {
       const showProd = settings.show_products !== undefined ? settings.show_products : settings.show_bestsellers;
       const link = document.getElementById('navProductsLink');
       if (link) link.style.display = showProd === 'true' ? '' : 'none';
+      const mobileLink = document.getElementById('mobileNavProductsLink');
+      if (mobileLink) mobileLink.style.display = showProd === 'true' ? '' : 'none';
     })
     .catch(() => {});
 
@@ -74,7 +90,8 @@ async function initPage(activePage = '') {
 // ==================== Navbar Logic ====================
 function initNavbar() {
   const hamburger = document.getElementById('navHamburger');
-  const navLinks = document.getElementById('navLinks');
+  const navLinks = document.getElementById('mobileNavLinks');
+  const desktopNavLinks = document.getElementById('navLinks');
 
   if (hamburger && navLinks) {
     hamburger.addEventListener('click', () => {
@@ -94,10 +111,9 @@ function initNavbar() {
 
     // Close menu on outside click
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.navbar-inner')) {
+      if (!e.target.closest('.navbar-hamburger') && !e.target.closest('.mobile-nav-overlay')) {
         hamburger.classList.remove('open');
         navLinks.classList.remove('open');
-        document.body.classList.remove('nav-open');
       }
     });
   }

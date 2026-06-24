@@ -415,7 +415,7 @@ function getNavbarHTML(activePage = '') {
           </div>
         </div>
 
-        <ul class="navbar-links" id="navLinks">
+        <ul class="navbar-links desktop-nav-links">
           <li><a href="index.html" class="${activePage === 'home' ? 'active' : ''}">Home</a></li>
           <li><a href="about.html" class="${activePage === 'about' ? 'active' : ''}">About Us</a></li>
           <li id="navProductsLink"><a href="products.html" class="${activePage === 'products' ? 'active' : ''}">Products</a></li>
