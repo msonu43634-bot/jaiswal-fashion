@@ -1,6 +1,9 @@
 const { Router } = require('express');
 const router = Router();
 const rateLimit = require('express-rate-limit');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const { getDb } = require('../db');
 const { sanitize, deepSanitize } = require('../middleware/sanitize');
@@ -9,6 +12,30 @@ const { encrypt, decrypt, deterministicHash } = require('../crypto-utils');
 const { ALLOWED_SETTINGS_KEYS } = require('../config');
 
 const SR = require('../shiprocket');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+
+const testimonialStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadsDir, 'testimonials');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const name = `testimonial_${req.params.id}_${Date.now()}${ext}`;
+    cb(null, name);
+  }
+});
+const testimonialUpload = multer({
+  storage: testimonialStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp/;
+    const ok = allowed.test(path.extname(file.originalname).toLowerCase()) && allowed.test(file.mimetype);
+    cb(null, ok);
+  }
+});
 
 const settingsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -105,10 +132,10 @@ router.post('/api/admin/testimonials', requireAdmin, requireCSRF, (req, res) => 
   const { name, role, text, rating, sort_order, active } = req.body;
   if (!name || !text) return res.status(400).json({ error: 'Name and text are required' });
   const db = getDb();
-  db.prepare('INSERT INTO testimonials (name, role, text, rating, sort_order, active) VALUES (?, ?, ?, ?, ?, ?)').run(
+  const info = db.prepare('INSERT INTO testimonials (name, role, text, rating, sort_order, active) VALUES (?, ?, ?, ?, ?, ?)').run(
     sanitize(name), sanitize(role || ''), sanitize(text), parseInt(rating) || 5, parseInt(sort_order) || 0, active !== undefined ? (active ? 1 : 0) : 1
   );
-  res.json({ success: true });
+  res.json({ success: true, id: info.lastInsertRowid });
 });
 
 router.put('/api/admin/testimonials/:id', requireAdmin, requireCSRF, (req, res) => {
@@ -120,8 +147,27 @@ router.put('/api/admin/testimonials/:id', requireAdmin, requireCSRF, (req, res) 
   res.json({ success: true });
 });
 
+router.post('/api/admin/testimonials/:id/image', requireAdmin, requireCSRF, testimonialUpload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No image file' });
+  const imagePath = `/uploads/testimonials/${req.file.filename}`;
+  const db = getDb();
+  // Delete old image if exists
+  const old = db.prepare('SELECT image FROM testimonials WHERE id = ?').get(req.params.id);
+  if (old && old.image) {
+    const oldPath = path.resolve(__dirname, '..', old.image.replace(/^\//, ''));
+    if (oldPath.startsWith(path.resolve(uploadsDir)) && fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+  }
+  db.prepare('UPDATE testimonials SET image = ? WHERE id = ?').run(imagePath, req.params.id);
+  res.json({ success: true, path: imagePath });
+});
+
 router.delete('/api/admin/testimonials/:id', requireAdmin, requireCSRF, (req, res) => {
   const db = getDb();
+  const t = db.prepare('SELECT image FROM testimonials WHERE id = ?').get(req.params.id);
+  if (t && t.image) {
+    const imgPath = path.resolve(__dirname, '..', t.image.replace(/^\//, ''));
+    if (imgPath.startsWith(path.resolve(uploadsDir)) && fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+  }
   db.prepare('DELETE FROM testimonials WHERE id = ?').run(req.params.id);
   res.json({ success: true });
 });

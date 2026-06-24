@@ -41,7 +41,7 @@
   <!-- Payment Modal -->
   <div class="modal-overlay" id="paymentModal">
     <div class="modal-content payment-modal-content" style="position:relative">
-      <button class="modal-close" id="closePaymentModal">?</button>
+      <button class="modal-close" id="closePaymentModal">✕</button>
       <h2 class="payment-modal-title">Checkout Details</h2>
       
       <!-- Checkout Address Selection/Entry -->
@@ -167,14 +167,6 @@
         </label>
       </div>
 
-      <div class="coupon-section">
-        <h4>Have a coupon code?</h4>
-        <div class="coupon-input-group">
-          <input type="text" class="form-input" placeholder="Enter coupon code" id="couponInput">
-          <button class="btn btn-outline" id="applyCoupon">Apply</button>
-        </div>
-      </div>
-
       <button class="btn btn-primary btn-xl w-full" id="confirmPayment" style="margin-top: var(--sp-6)">
         Confirm & Place Order
       </button>
@@ -195,9 +187,6 @@
       }
       renderCart();
     });
-
-    let appliedCoupon = null;
-    let couponDiscount = 0;
 
     function renderCart() {
       let cart = getCart();
@@ -286,8 +275,7 @@
       // Render summary
       const gst = Math.round(subtotal * 0.05);
       const delivery = subtotal >= 2000 ? 0 : 99;
-      couponDiscount = appliedCoupon ? Math.round(subtotal * 0.1) : 0;
-      const total = subtotal + gst + delivery - couponDiscount;
+      const total = subtotal + gst + delivery;
 
       document.getElementById('cartSummary').innerHTML = `
         <div class="summary-card">
@@ -295,11 +283,10 @@
           <div class="summary-row"><span>Subtotal (${cart.reduce((s,i) => s+i.quantity, 0)} items)</span><span>${formatPrice(subtotal)}</span></div>
           <div class="summary-row"><span>GST (5%)</span><span>${formatPrice(gst)}</span></div>
           <div class="summary-row"><span>Delivery</span><span class="${delivery === 0 ? 'text-gold' : ''}">${delivery === 0 ? 'FREE' : formatPrice(delivery)}</span></div>
-          ${couponDiscount > 0 ? `<div class="summary-row" style="color:#10b981;"><span>Coupon (${appliedCoupon})</span><span>-${formatPrice(couponDiscount)}</span></div>` : ''}
           ${delivery === 0 ? '' : `<p class="free-delivery-msg">Free delivery on orders above ₹2,000</p>`}
           <div class="summary-divider"></div>
           <div class="summary-row total"><span>Total</span><span>${formatPrice(total)}</span></div>
-          <div class="summary-row savings"><span>You Save</span><span>${formatPrice(cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.productId); return s + (p ? (p.originalPrice - p.price) * item.quantity : 0); }, 0) + couponDiscount)}</span></div>
+          <div class="summary-row savings"><span>You Save</span><span>${formatPrice(cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.productId); return s + (p ? (p.originalPrice - p.price) * item.quantity : 0); }, 0))}</span></div>
           <button class="btn btn-primary btn-xl w-full" id="checkoutBtn" style="margin-top: var(--sp-6)">
             Proceed to Payment
           </button>
@@ -522,7 +509,7 @@
               if (data && data.phone) document.getElementById('checkoutPhone').value = data.phone;
               if (data && data.city) document.getElementById('checkoutCity').value = data.city;
               if (data && data.pincode) document.getElementById('checkoutPincode').value = data.pincode;
-              loader.textContent = 'Found & Auto-filled ?';
+              loader.textContent = 'Found & Auto-filled ✓';
               loader.style.color = '#10b981';
             }
           } else {
@@ -560,8 +547,7 @@
 
       const gst = Math.round(subtotal * 0.05);
       const deliveryCharge = subtotal >= 2000 ? 0 : 99;
-      const discountAmount = couponDiscount;
-      const totalAmount = subtotal + gst + deliveryCharge - discountAmount;
+      const totalAmount = subtotal + gst + deliveryCharge;
 
       let name, phone, email, fullAddress;
       
@@ -615,9 +601,7 @@
             totalAmount,
             gst,
             deliveryCharge,
-            paymentMethod,
-            coupon: appliedCoupon,
-            discount: discountAmount
+            paymentMethod
           })
         });
 
@@ -640,22 +624,6 @@
       } finally {
         document.getElementById('confirmPayment').disabled = false;
         document.getElementById('confirmPayment').textContent = 'Confirm & Place Order';
-      }
-    });
-
-    document.getElementById('applyCoupon').addEventListener('click', () => {
-      const code = document.getElementById('couponInput').value.trim();
-      if (!code) return;
-      if (code.toUpperCase() === 'JF10') {
-        appliedCoupon = code.toUpperCase();
-        couponDiscount = 0;
-        renderCart();
-        showToast('Coupon applied! 10% discount added 🎉', 'success');
-      } else {
-        appliedCoupon = null;
-        couponDiscount = 0;
-        renderCart();
-        showToast('Invalid coupon code', 'error');
       }
     });
 

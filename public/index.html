@@ -258,39 +258,17 @@
             </div>
           </div>
 
-          <!-- PRODUCT IMAGES - 4 ANGLES (PER COLOR) -->
+          <!-- PRODUCT IMAGES - DYNAMIC ANGLES (PER COLOR) -->
           <div class="form-group">
-            <label class="form-label">📸 Product Photos (4 Angles per Color)</label>
-            <div style="margin-bottom: 12px;">
-              <select id="pf_imageColorSelect" class="form-select" style="font-size: 13px;" onchange="loadImagesForSelectedColor()">
+            <label class="form-label">📸 Product Photos (Add as many angles as needed)</label>
+            <div style="margin-bottom: 12px; display:flex; gap:8px; align-items:center;">
+              <select id="pf_imageColorSelect" class="form-select" style="font-size: 13px; flex:1;" onchange="loadImagesForSelectedColor()">
                 <option value="">-- Select Color First --</option>
               </select>
+              <button type="button" class="btn btn-sm btn-ghost" onclick="addAngleBox()" id="pf_addAngleBtn" style="white-space:nowrap;">+ Add Angle</button>
             </div>
             <div class="image-upload-grid" id="pf_imageGrid" style="opacity: 0.5; pointer-events: none;">
-              <div class="image-upload-box" data-angle="front" onclick="triggerImageUpload(this)">
-                <input type="file" accept="image/*" onchange="previewImage(this)">
-                <span class="upload-icon">📷</span>
-                <span class="upload-label">Front View</span>
-                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
-              </div>
-              <div class="image-upload-box" data-angle="back" onclick="triggerImageUpload(this)">
-                <input type="file" accept="image/*" onchange="previewImage(this)">
-                <span class="upload-icon">📷</span>
-                <span class="upload-label">Back View</span>
-                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
-              </div>
-              <div class="image-upload-box" data-angle="left" onclick="triggerImageUpload(this)">
-                <input type="file" accept="image/*" onchange="previewImage(this)">
-                <span class="upload-icon">📷</span>
-                <span class="upload-label">Left Side</span>
-                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
-              </div>
-              <div class="image-upload-box" data-angle="right" onclick="triggerImageUpload(this)">
-                <input type="file" accept="image/*" onchange="previewImage(this)">
-                <span class="upload-icon">📷</span>
-                <span class="upload-label">Right Side</span>
-                <button type="button" class="remove-img" onclick="event.stopPropagation(); removeImage(this)">✕</button>
-              </div>
+              <!-- Dynamic angle upload boxes will be added here -->
             </div>
           </div>
 
@@ -308,7 +286,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('productModal')">Cancel</button>
-        <button class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">💾 Save Product</button>
+        <button type="button" class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">💾 Save Product</button>
       </div>
     </div>
   </div>

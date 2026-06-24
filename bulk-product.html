@@ -10,30 +10,18 @@
   <link rel="stylesheet" href="./css/products.css">
   <style>
     .buluk-hero {
-      background: linear-gradient(135deg, #1a0000 0%, #3d0000 30%, #5c0e0e 60%, #8b0000 100%);
+      background: linear-gradient(180deg, #f2ede6 0%, var(--bg-primary) 100%);
       position: relative;
       overflow: hidden;
-      padding: 80px 0 60px;
-    }
-    .buluk-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(232,185,74,0.08) 0%, transparent 70%);
-    }
-    .buluk-hero::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      padding: calc(80px + var(--sp-16)) 0 var(--sp-12);
+      text-align: center;
     }
     .buluk-hero .container { position: relative; z-index: 1; }
-    .buluk-hero .breadcrumbs a { color: rgba(255,255,255,0.6); }
+    .buluk-hero .breadcrumbs a { color: var(--text-muted); }
     .buluk-hero .breadcrumbs .current { color: var(--gold); }
-    .buluk-hero h1 { font-size: var(--fs-5xl); font-family: var(--font-display); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+    .buluk-hero h1 { font-size: var(--fs-5xl); font-family: var(--font-display); font-weight: 800; margin-bottom: var(--sp-3); }
     .buluk-hero h1 span { color: var(--gold); }
-    .buluk-hero p { color: rgba(255,255,255,0.7); font-size: var(--fs-lg); margin-top: var(--sp-4); }
+    .buluk-hero p { color: var(--text-secondary); font-size: var(--fs-lg); max-width: 600px; margin: 0 auto; }
     .buluk-badge {
       display: inline-flex;
       align-items: center;
@@ -67,7 +55,7 @@
       background:var(--bg-card); border:1px solid var(--border); border-radius:20px;
       padding:28px 24px; width:100%; max-height:90vh; overflow-y:auto;
     }
-    .buluk-order-btn:hover { background:var(--gold); color:#000 !important; }
+    .buluk-order-btn:hover { background:#ef4444; color:#fff !important; }
     #orderSummaryBar .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
     .order-item-tag {
       display:inline-flex; align-items:center; gap:6px;
@@ -179,7 +167,7 @@
     <div class="modal-content" style="max-width:420px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h3 style="font-size:18px; font-weight:700;">📋 Select Order</h3>
-        <button onclick="closeOrderModal()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">?</button>
+        <button onclick="closeOrderModal()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✕</button>
       </div>
       <div id="orderModalBody">
         <p style="color:var(--text-muted); margin-bottom:16px;" id="orderModalProductName"></p>
@@ -226,7 +214,7 @@
     <div class="modal-content" style="max-width:480px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h3 style="font-size:18px; font-weight:700;">📝 Place Buluk Order</h3>
-        <button onclick="closeCheckout()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">?</button>
+        <button onclick="closeCheckout()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✕</button>
       </div>
       <form id="checkoutForm" onsubmit="submitOrder(event)">
         <div id="checkoutItemsList" style="margin-bottom:16px; max-height:200px; overflow-y:auto;"></div>
@@ -341,7 +329,7 @@
         grid.innerHTML = filtered.map(p => `
           <div class="product-card-wrapper">
             ${createProductCard(p)}
-            <button class="btn btn-outline btn-sm buluk-order-btn" onclick="openOrderModal('${p.id}')" style="width:100%; margin-top:6px; border-color:var(--gold); color:var(--gold); font-size:13px;">
+            <button class="btn btn-outline btn-sm buluk-order-btn" onclick="openOrderModal('${p.id}')" style="width:100%; margin-top:6px; border-color:#ef4444; color:#ef4444; font-size:13px;">
               🛒 Order Now
             </button>
           </div>
@@ -355,13 +343,13 @@
       const container = document.getElementById('activeFilters');
       const tags = [];
       if (filters.maxPrice < 5000) {
-        tags.push(`<span class="active-filter-tag">Under ${filters.maxPrice} <button onclick="filters.maxPrice = 5000; document.getElementById('priceSlider').value = 5000; document.getElementById('priceValue').textContent = '₹5,000'; applyFilters();">?</button></span>`);
+        tags.push(`<span class="active-filter-tag">Under ${filters.maxPrice} <button onclick="filters.maxPrice = 5000; document.getElementById('priceSlider').value = 5000; document.getElementById('priceValue').textContent = '₹5,000'; applyFilters();">✕</button></span>`);
       }
       filters.colors.forEach(c => {
-        tags.push(`<span class="active-filter-tag">${c} <button onclick="filters.colors = filters.colors.filter(x => x !== '${c}'); document.querySelector('.color-filter-btn[data-color=\"${c}\"]')?.classList.remove('active'); applyFilters();">?</button></span>`);
+        tags.push(`<span class="active-filter-tag">${c} <button onclick="filters.colors = filters.colors.filter(x => x !== '${c}'); document.querySelector('.color-filter-btn[data-color=\"${c}\"]')?.classList.remove('active'); applyFilters();">✕</button></span>`);
       });
       filters.sizes.forEach(s => {
-        tags.push(`<span class="active-filter-tag">Size ${s} <button onclick="filters.sizes = filters.sizes.filter(x => x !== '${s}'); document.querySelector('.size-filter-btn[data-size=\"${s}\"]')?.classList.remove('active'); applyFilters();">?</button></span>`);
+        tags.push(`<span class="active-filter-tag">Size ${s} <button onclick="filters.sizes = filters.sizes.filter(x => x !== '${s}'); document.querySelector('.size-filter-btn[data-size=\"${s}\"]')?.classList.remove('active'); applyFilters();">✕</button></span>`);
       });
       container.innerHTML = tags.join('');
     }
@@ -569,7 +557,7 @@ document.getElementById('priceValue').textContent = '₹5,000';
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-weight:600;">${item.quantity} × ${item.price}</span>
-            <span onclick="removeOrderItem(${i}); openCheckout();" style="cursor:pointer; color:#f87171; font-size:18px;">?</span>
+            <span onclick="removeOrderItem(${i}); openCheckout();" style="cursor:pointer; color:#f87171; font-size:18px;">✕</span>
           </div>
         </div>
       `).join('');
@@ -606,7 +594,7 @@ document.getElementById('priceValue').textContent = '₹5,000';
         });
         const data = await res.json();
         if (res.ok) {
-          showToast('? Order placed successfully! We will contact you soon.', 'success');
+          showToast('✅ Order placed successfully! We will contact you soon.', 'success');
           closeCheckout();
           clearOrderList();
           document.getElementById('checkoutForm').reset();

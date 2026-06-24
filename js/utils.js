@@ -328,7 +328,7 @@ function createProductCard(product) {
   if (product.images && product.images.length > 0) {
     let matchedImg = product.images[0];
     if (firstColorName) {
-      const found = product.images.find(img => img.color_name === firstColorName);
+      const found = product.images.find(img => img.color_name && img.color_name.toLowerCase() === firstColorName.toLowerCase());
       if (found) matchedImg = found;
     }
     const imgUrl = getImageUrl(matchedImg.image_path);
@@ -418,7 +418,7 @@ function getNavbarHTML(activePage = '') {
         <ul class="navbar-links" id="navLinks">
           <li><a href="index.html" class="${activePage === 'home' ? 'active' : ''}">Home</a></li>
           <li><a href="about.html" class="${activePage === 'about' ? 'active' : ''}">About Us</a></li>
-          <li><a href="products.html" class="${activePage === 'products' ? 'active' : ''}">Products</a></li>
+          <li id="navProductsLink"><a href="products.html" class="${activePage === 'products' ? 'active' : ''}">Products</a></li>
           <li id="navBulukLink"><a href="bulk-product.html" class="${activePage === 'buluk' ? 'active' : ''}">Bulk Order Only</a></li>
           <li><a href="bulk-orders.html" class="${activePage === 'bulk' ? 'active' : ''}">Bulk Enquiries</a></li>
           <li><a href="contact.html" class="${activePage === 'contact' ? 'active' : ''}">Contact</a></li>

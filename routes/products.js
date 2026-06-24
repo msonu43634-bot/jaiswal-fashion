@@ -85,6 +85,27 @@ router.get('/api/categories', (req, res) => {
   res.json(db.prepare('SELECT * FROM categories ORDER BY name').all());
 });
 
+router.post('/api/admin/categories', requireAdmin, requireCSRF, (req, res) => {
+  const db = getDb();
+  const { id, name, icon, gradient } = req.body;
+  if (!id || !name) return res.status(400).json({ error: 'ID and Name are required' });
+
+  try {
+    db.prepare('INSERT INTO categories (id, name, icon, gradient) VALUES (?, ?, ?, ?)').run(
+      sanitize(id),
+      sanitize(name),
+      sanitize(icon || '🏷️'),
+      sanitize(gradient || 'linear-gradient(135deg, #11998e, #38ef7d)')
+    );
+    res.json({ success: true, id: sanitize(id) });
+  } catch (err) {
+    if (err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
+      return res.status(400).json({ error: 'Category already exists' });
+    }
+    res.status(500).json({ error: 'Failed to add category' });
+  }
+});
+
 router.post('/api/products', requireAdmin, requireCSRF, (req, res) => {
   const db = getDb();
   const { id, name, category, price, originalPrice, colors, sizes, description, material, fit, washCare, badge, gradient, inStock, isBulk } = req.body;

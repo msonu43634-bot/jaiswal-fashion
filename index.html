@@ -308,7 +308,7 @@
           if (settings.show_categories !== 'true') hide('categories');
           if (settings.show_features !== 'true') hide('features');
           const showProd = settings.show_products !== undefined ? settings.show_products : settings.show_bestsellers;
-          if (showProd !== 'true') hide('bestsellers');
+          if (showProd !== 'true') { hide('bestsellers'); hide('bulkProductsWrapper'); hide('bulukSection'); hide('bulkPricingSection'); const pl = document.getElementById('navProductsLink'); if (pl) pl.style.display = 'none'; }
           if (settings.show_testimonials !== 'true') hide('testimonials');
           if (settings.show_bulk_pricing !== 'true') hide('bulkPricingSection');
         })
@@ -326,13 +326,15 @@
 
       // Render Testimonials from API
       fetch('/api/testimonials').then(r => r.json()).then(testimonialsData => {
+        console.log('Testimonials loaded:', testimonialsData.length, 'items');
         const testimonialsGrid = document.getElementById('testimonialsGrid');
+        if (!testimonialsGrid) { console.error('testimonialsGrid not found!'); return; }
         testimonialsGrid.innerHTML = testimonialsData.map((t, i) => `
           <div class="testimonial-card reveal delay-${(i % 4) + 1}">
             <div class="testimonial-stars">${renderStars(t.rating)}</div>
             <p class="testimonial-text">"${t.text}"</p>
             <div class="testimonial-author">
-              <div class="testimonial-avatar">${t.name.charAt(0)}</div>
+              ${t.image ? `<img src="${t.image}" alt="${t.name}" class="testimonial-avatar" style="object-fit:cover;">` : `<div class="testimonial-avatar">${t.name.charAt(0)}</div>`}
               <div>
                 <h4 class="testimonial-name">${t.name}</h4>
                 <p class="testimonial-role">${t.role}</p>
@@ -340,7 +342,8 @@
             </div>
           </div>
         `).join('');
-      }).catch(() => {});
+        console.log('Testimonials rendered');
+      }).catch(err => console.error('Testimonials fetch error:', err));
 
       setTimeout(() => initScrollReveal(), 100);
     });

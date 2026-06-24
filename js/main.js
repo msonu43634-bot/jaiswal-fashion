@@ -36,6 +36,16 @@ async function initPage(activePage = '') {
     navContainer.innerHTML = getNavbarHTML(activePage);
   }
 
+  // Show/hide Products nav link based on settings
+  fetch('/api/settings')
+    .then(r => r.json())
+    .then(settings => {
+      const showProd = settings.show_products !== undefined ? settings.show_products : settings.show_bestsellers;
+      const link = document.getElementById('navProductsLink');
+      if (link) link.style.display = showProd === 'true' ? '' : 'none';
+    })
+    .catch(() => {});
+
   // Inject footer
   const footerContainer = document.getElementById('footer-container');
   if (footerContainer) {

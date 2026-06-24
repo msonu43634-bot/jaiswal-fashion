@@ -246,6 +246,7 @@ function createTables() {
   try { db.prepare("ALTER TABLE orders ADD COLUMN discount REAL DEFAULT 0").run(); } catch(e) {}
   try { db.prepare("ALTER TABLE orders ADD COLUMN coupon_code TEXT DEFAULT ''").run(); } catch(e) {}
   try { db.prepare("ALTER TABLE orders ADD COLUMN invoice_path TEXT DEFAULT NULL").run(); } catch(e) {}
+  try { db.prepare("ALTER TABLE testimonials ADD COLUMN image TEXT DEFAULT ''").run(); } catch(e) {}
 
   const srMigrations = [
     "ALTER TABLE orders ADD COLUMN shiprocket_order_id TEXT DEFAULT NULL",

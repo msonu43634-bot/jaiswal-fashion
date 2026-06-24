@@ -60,7 +60,7 @@ async function loadProducts() {
                   </div>
                 </td>
                 <td><span style="font-size:13px;">${(p.sizes || []).join(', ')}</span></td>
-                <td><span style="font-size:13px; color:${p.images && p.images.length ? 'var(--success)' : 'var(--text-muted)'};">${p.images ? p.images.length : 0}/4 📷</span></td>
+                <td><span style="font-size:13px; color:${p.images && p.images.length ? 'var(--success)' : 'var(--text-muted)'};">${p.images ? p.images.length : 0} 📷</span></td>
                 <td><span class="status-badge ${p.inStock ? 'status-completed' : 'status-cancelled'}">${p.inStock ? 'In Stock' : 'Out'}</span></td>
                 <td>
                   <div style="display:flex;gap:6px;">
@@ -154,7 +154,7 @@ async function loadBulukProducts() {
                   </div>
                 </td>
                 <td><span style="font-size:13px;">${(p.sizes || []).join(', ')}</span></td>
-                <td><span style="font-size:13px; color:${p.images && p.images.length ? 'var(--success)' : 'var(--text-muted)'};">${p.images ? p.images.length : 0}/4 📷</span></td>
+                <td><span style="font-size:13px; color:${p.images && p.images.length ? 'var(--success)' : 'var(--text-muted)'};">${p.images ? p.images.length : 0} 📷</span></td>
                 <td><span class="status-badge ${p.inStock ? 'status-completed' : 'status-cancelled'}">${p.inStock ? 'In Stock' : 'Out'}</span></td>
                 <td>
                   <div style="display:flex;gap:6px;">
@@ -186,26 +186,43 @@ function openAddProduct() {
   document.getElementById('pf_editId').value = '';
   document.getElementById('productForm').reset();
   document.getElementById('pf_isBulk').checked = false;
+  
+  window.currentProductData = null; // Important for state check
+  
   editColors = [];
   editSizes = ['S', 'M', 'L', 'XL'];
   renderColors();
   renderSizes();
-  clearImagePreviews();
+  loadCategoryOptions();
+  
   document.getElementById('pf_imageColorSelect').value = '';
-  document.getElementById('pf_imageGrid').style.opacity = '0.5';
-  document.getElementById('pf_imageGrid').style.pointerEvents = 'none';
+  loadImagesForSelectedColor(); // This auto-enables for default state
   openModal('productModal');
+}
+
+// Enable/disable image grid + add angle button together
+function setImageGridEnabled(enabled) {
+  const grid = document.getElementById('pf_imageGrid');
+  const addBtn = document.getElementById('pf_addAngleBtn');
+  grid.style.opacity = enabled ? '1' : '0.5';
+  grid.style.pointerEvents = enabled ? 'auto' : 'none';
+  if (addBtn) {
+    addBtn.disabled = !enabled;
+    addBtn.style.opacity = enabled ? '1' : '0.5';
+    addBtn.style.pointerEvents = enabled ? 'auto' : 'none';
+  }
 }
 
 function openEditProduct(id) {
   const p = productsData.find(x => x.id === id);
   if (!p) return;
+  
+  window.currentProductData = p; // Important to set before renderColors
 
   document.getElementById('productModalTitle').textContent = 'Edit Product';
   document.getElementById('productSaveBtn').textContent = '💾 Update Product';
   document.getElementById('pf_editId').value = p.id;
   document.getElementById('pf_name').value = p.name;
-  document.getElementById('pf_category').value = p.category;
   document.getElementById('pf_price').value = p.price;
   document.getElementById('pf_originalPrice').value = p.originalPrice;
   document.getElementById('pf_badge').value = p.badge || '';
@@ -220,47 +237,44 @@ function openEditProduct(id) {
   editSizes = [...(p.sizes || [])];
   renderColors();
   renderSizes();
+  loadCategoryOptions(p.category);
 
-  // Load images
-  window.currentProductData = p; // store for reference when switching colors
   document.getElementById('pf_imageColorSelect').value = '';
-  clearImagePreviews();
-  document.getElementById('pf_imageGrid').style.opacity = '0.5';
-  document.getElementById('pf_imageGrid').style.pointerEvents = 'none';
+  loadImagesForSelectedColor();
 
   openModal('productModal');
 }
 
 function loadImagesForSelectedColor() {
-  const colorName = document.getElementById('pf_imageColorSelect').value;
-  const grid = document.getElementById('pf_imageGrid');
+  let colorName = document.getElementById('pf_imageColorSelect').value;
+  const p = window.currentProductData;
+  const hasNoColors = editColors.length === 0;
+
+  // If no explicit colors exist, auto-use 'default'
+  if (!colorName && hasNoColors) {
+    colorName = 'default';
+  }
 
   if (!colorName) {
-    grid.style.opacity = '0.5';
-    grid.style.pointerEvents = 'none';
-    clearImagePreviews();
+    setImageGridEnabled(false);
+    clearAngleBoxes();
     return;
   }
 
-  grid.style.opacity = '1';
-  grid.style.pointerEvents = 'auto';
-  clearImagePreviews();
+  setImageGridEnabled(true);
+  clearAngleBoxes();
 
-  const p = window.currentProductData;
   if (p && p.images) {
-    p.images.filter(i => i.color_name === colorName || (i.color_name === '' && colorName === 'default')).forEach(img => {
-      const box = document.querySelector(`.image-upload-box[data-angle="${img.view_angle}"]`);
-      if (box) {
-        let preview = box.querySelector('img');
-        if (!preview) {
-          preview = document.createElement('img');
-          box.appendChild(preview);
-        }
-        preview.src = img.image_path;
-        box.classList.add('has-image');
-        box.dataset.existingImageId = img.id;
-      }
-    });
+    const matched = p.images.filter(i => i.color_name && i.color_name.toLowerCase() === colorName.toLowerCase());
+    if (matched.length > 0) {
+      matched.forEach(img => {
+        addAngleBox(img.view_angle, img.image_path, img.id);
+      });
+    } else {
+      addAngleBox();
+    }
+  } else {
+    addAngleBox();
   }
 }
 
@@ -311,16 +325,41 @@ async function saveProduct() {
       const boxes = document.querySelectorAll('.image-upload-box');
       const selectedColor = document.getElementById('pf_imageColorSelect').value || 'default';
 
+      let uploadErrors = [];
+      let unnamedAngleCounter = 1;
       for (const box of boxes) {
         const fileInput = box.querySelector('input[type="file"]');
+        const angleInput = box.querySelector('.angle-name-input');
+        let angle = angleInput ? angleInput.value.trim() : (box.dataset.angle || '');
+        
+        // If angle name is empty but a file is selected, auto-assign a name
+        if (!angle && fileInput && fileInput.files.length > 0) {
+          angle = `View-${unnamedAngleCounter++}`;
+        }
+        
+        if (!angle) continue;
+        
+        // Update input field to show the assigned name
+        if (angleInput) angleInput.value = angle;
+        box.dataset.angle = angle;
+        
         if (fileInput && fileInput.files.length > 0) {
           const formData = new FormData();
           formData.append('image', fileInput.files[0]);
-          await apiFetch(`${API}/products/${productId}/images/${box.dataset.angle}/${encodeURIComponent(selectedColor)}`, {
+          const resp = await apiFetch(`${API}/products/${productId}/images/${encodeURIComponent(angle)}/${encodeURIComponent(selectedColor)}`, {
             method: 'POST',
             body: formData
           });
+          if (!resp.ok) {
+            let errMsg = `Angle "${angle}": HTTP ${resp.status}`;
+            try { const e = await resp.json(); if (e.error) errMsg += ` - ${e.error}`; } catch(e) {}
+            uploadErrors.push(errMsg);
+          }
         }
+      }
+
+      if (uploadErrors.length > 0) {
+        alert('Product saved, but some images failed to upload:\n' + uploadErrors.join('\n'));
       }
 
       closeModal('productModal');
@@ -377,6 +416,8 @@ function renderColors() {
   if (editColors.find(c => c.name === currentValue)) {
     select.value = currentValue;
   }
+
+  loadImagesForSelectedColor();
 }
 
 function addSize() {
@@ -400,43 +441,130 @@ function renderSizes() {
   `).join('') || '<span style="color:var(--text-muted);font-size:13px;">No sizes added</span>');
 }
 
-// ==================== IMAGE UPLOAD ====================
+// ==================== IMAGE UPLOAD (Dynamic Angles) ====================
+function addAngleBox(angleName, existingImagePath, existingImageId) {
+  // Check if color is selected before allowing add
+  const colorSelect = document.getElementById('pf_imageColorSelect');
+  const hasNoColors = editColors.length === 0;
+  if (!hasNoColors && (!colorSelect || !colorSelect.value)) {
+    alert('⚠️ Pehle ek Color select karo, phir image angle add hoga.');
+    return;
+  }
+
+  const grid = document.getElementById('pf_imageGrid');
+  const box = document.createElement('div');
+  box.className = 'image-upload-box' + (existingImagePath ? ' has-image' : '');
+  if (angleName) box.dataset.angle = angleName;
+  if (existingImageId) box.dataset.existingImageId = existingImageId;
+
+  box.innerHTML = `
+    <input type="text" class="angle-name-input" value="${angleName || ''}" placeholder="Angle name (e.g. Front)" onclick="event.stopPropagation()">
+    <input type="file" accept="image/*" onchange="previewImage(this)">
+    ${existingImagePath ? `<img src="${existingImagePath}">` : '<span class="upload-icon">📷<br><span style="font-size:10px;">Click to upload</span></span>'}
+    <button type="button" class="remove-img always-visible" onclick="event.stopPropagation(); removeAngleBox(this)" title="Remove this angle">✕</button>
+  `;
+
+  box.addEventListener('click', (e) => {
+    // Don't trigger file upload if clicking on the text input or remove button
+    if (e.target.classList.contains('angle-name-input') || e.target.classList.contains('remove-img')) return;
+    triggerImageUpload(box);
+  });
+  grid.appendChild(box);
+}
+
+function removeAngleBox(btn) {
+  const box = btn.closest('.image-upload-box');
+  const existingId = box.dataset.existingImageId;
+  const productId = document.getElementById('pf_editId').value;
+
+  if (existingId && productId) {
+    apiFetch(`${API}/products/${productId}/images/${existingId}`, { method: 'DELETE' })
+      .catch(() => {});
+  }
+  box.remove();
+}
+
+function clearAngleBoxes() {
+  const grid = document.getElementById('pf_imageGrid');
+  grid.innerHTML = '';
+}
+
+// ==================== CATEGORY MANAGEMENT ====================
+async function loadCategoryOptions(selectedValue) {
+  try {
+    const res = await fetch(`${API}/categories`, { credentials: 'include' });
+    const categories = await res.json();
+    const select = document.getElementById('pf_category');
+    select.innerHTML = categories.map(c =>
+      `<option value="${c.id}">${c.name}</option>`
+    ).join('') + '<option value="__add_new__" style="color: #d4a039; font-weight: bold;">➕ Add New Category...</option>';
+    if (selectedValue) {
+      select.value = selectedValue;
+    }
+  } catch (err) {
+    console.error('Failed to load categories:', err);
+  }
+}
+
+// Listen for category dropdown change to handle "Add New"
+document.getElementById('pf_category').addEventListener('change', async function() {
+  if (this.value !== '__add_new__') return;
+
+  const catName = prompt('🆕 Naya Category ka naam likho (e.g. Shirts):');
+  if (!catName || !catName.trim()) {
+    this.value = this.options[0]?.value || '';
+    return;
+  }
+
+  const catId = catName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  if (!catId) {
+    alert('Invalid category name');
+    this.value = this.options[0]?.value || '';
+    return;
+  }
+
+  try {
+    const res = await apiFetch(`${API}/admin/categories`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: catId, name: catName.trim() })
+    });
+    const data = await res.json();
+    if (data.success) {
+      await loadCategoryOptions(catId);
+    } else {
+      alert('Error: ' + (data.error || 'Category add failed'));
+      this.value = this.options[0]?.value || '';
+    }
+  } catch (err) {
+    alert('Error adding category: ' + err.message);
+    this.value = this.options[0]?.value || '';
+  }
+});
+
 function triggerImageUpload(box) {
-  box.querySelector('input[type="file"]').click();
+  const fileInput = box.querySelector('input[type="file"]');
+  if (fileInput) fileInput.click();
 }
 
 function previewImage(input) {
   const box = input.closest('.image-upload-box');
+  const existingImg = box.querySelector('img');
+  const uploadIcon = box.querySelector('.upload-icon');
+
   if (input.files && input.files[0]) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      let img = box.querySelector('img');
-      if (!img) {
-        img = document.createElement('img');
+      if (existingImg) {
+        existingImg.src = e.target.result;
+      } else {
+        if (uploadIcon) uploadIcon.remove();
+        const img = document.createElement('img');
+        img.src = e.target.result;
         box.appendChild(img);
       }
-      img.src = e.target.result;
       box.classList.add('has-image');
     };
     reader.readAsDataURL(input.files[0]);
   }
-}
-
-function removeImage(btn) {
-  const box = btn.closest('.image-upload-box');
-  const img = box.querySelector('img');
-  if (img) img.remove();
-  box.classList.remove('has-image');
-  box.querySelector('input[type="file"]').value = '';
-  delete box.dataset.existingImageId;
-}
-
-function clearImagePreviews() {
-  document.querySelectorAll('.image-upload-box').forEach(box => {
-    const img = box.querySelector('img');
-    if (img) img.remove();
-    box.classList.remove('has-image');
-    box.querySelector('input[type="file"]').value = '';
-    delete box.dataset.existingImageId;
-  });
 }

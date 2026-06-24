@@ -20,35 +20,11 @@ async function loadSettings() {
           <form id="websiteSettingsForm" onsubmit="saveWebsiteSettings(event)">
             <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-subtle);">
               <div>
-                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Show Bulk Products Section</strong>
-                <span style="color: var(--text-secondary); font-size: 13px;">Display the Wholesale/Bulk Products section on the homepage.</span>
+                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Product Order Only</strong>
+                <span style="color: var(--text-secondary); font-size: 13px;">Display the Products section on header.</span>
               </div>
               <label class="switch" style="position:relative; display:inline-block; width:50px; height:24px;">
-                <input type="checkbox" id="set_bulkSection" ${settings.show_bulk_section == true || settings.show_bulk_section === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
-                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:${settings.show_bulk_section == true || settings.show_bulk_section === 'true' ? 'var(--success)' : '#ccc'}; transition:.4s; border-radius:34px;">
-                  <span style="position:absolute; height:18px; width:18px; left: ${settings.show_bulk_section == true || settings.show_bulk_section === 'true' ? '28px' : '3px'}; bottom:3px; background-color:white; transition:.4s; border-radius:50%;"></span>
-                </span>
-              </label>
-            </div>
-            <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-subtle);">
-              <div>
-                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Show Bulk Section</strong>
-                <span style="color: var(--text-secondary); font-size: 13px;">Display the Bulk products section on homepage and navbar.</span>
-              </div>
-              <label class="switch" style="position:relative; display:inline-block; width:50px; height:24px;">
-                <input type="checkbox" id="set_bulukEnabled" ${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
-                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? 'var(--success)' : '#ccc'}; transition:.4s; border-radius:34px;">
-                  <span style="position:absolute; height:18px; width:18px; left: ${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? '28px' : '3px'}; bottom:3px; background-color:white; transition:.4s; border-radius:50%;"></span>
-                </span>
-              </label>
-            </div>
-            <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-subtle);">
-              <div>
-                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Show Products Section</strong>
-                <span style="color: var(--text-secondary); font-size: 13px;">Display the Products section on the homepage.</span>
-              </div>
-              <label class="switch" style="position:relative; display:inline-block; width:50px; height:24px;">
-                <input type="checkbox" id="set_showProducts" ${settings.show_products == true || settings.show_products === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
+                <input type="checkbox" id="set_productSection" ${settings.show_products == true || settings.show_products === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
                 <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:${settings.show_products == true || settings.show_products === 'true' ? 'var(--success)' : '#ccc'}; transition:.4s; border-radius:34px;">
                   <span style="position:absolute; height:18px; width:18px; left: ${settings.show_products == true || settings.show_products === 'true' ? '28px' : '3px'}; bottom:3px; background-color:white; transition:.4s; border-radius:50%;"></span>
                 </span>
@@ -56,13 +32,13 @@ async function loadSettings() {
             </div>
             <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-subtle);">
               <div>
-                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Show Best Selling Products</strong>
-                <span style="color: var(--text-secondary); font-size: 13px;">Display the Best Selling Products section on the homepage.</span>
+                <strong style="display:block; font-size: 16px; margin-bottom: 4px;">Buluk Order Only</strong>
+                <span style="color: var(--text-secondary); font-size: 13px;">Display the Buluk section on header.</span>
               </div>
               <label class="switch" style="position:relative; display:inline-block; width:50px; height:24px;">
-                <input type="checkbox" id="set_showBestsellers" ${settings.show_bestsellers == true || settings.show_bestsellers === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
-                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:${settings.show_bestsellers == true || settings.show_bestsellers === 'true' ? 'var(--success)' : '#ccc'}; transition:.4s; border-radius:34px;">
-                  <span style="position:absolute; height:18px; width:18px; left: ${settings.show_bestsellers == true || settings.show_bestsellers === 'true' ? '28px' : '3px'}; bottom:3px; background-color:white; transition:.4s; border-radius:50%;"></span>
+                <input type="checkbox" id="set_bulukEnabled" ${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? 'checked' : ''} style="opacity:0; width:0; height:0;">
+                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? 'var(--success)' : '#ccc'}; transition:.4s; border-radius:34px;">
+                  <span style="position:absolute; height:18px; width:18px; left: ${settings.buluk_enabled == true || settings.buluk_enabled === 'true' ? '28px' : '3px'}; bottom:3px; background-color:white; transition:.4s; border-radius:50%;"></span>
                 </span>
               </label>
             </div>
@@ -280,13 +256,14 @@ async function loadTestimonials() {
       </div>
       <div class="data-table-container">
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Role</th><th>Text</th><th>Rating</th><th>Active</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Image</th><th>Name</th><th>Role</th><th>Text</th><th>Rating</th><th>Active</th><th>Actions</th></tr></thead>
           <tbody>
             ${list.map(t => `
               <tr>
+                <td>${t.image ? `<img src="${t.image}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">` : '<span style="color:var(--text-muted);font-size:11px;">No img</span>'}</td>
                 <td><strong>${t.name}</strong></td>
                 <td>${t.role || '-'}</td>
-                <td style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">"${t.text}"</td>
+                <td style="max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">"${t.text}"</td>
                 <td>${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</td>
                 <td>${t.active ? '<span style="color:var(--success)">Yes</span>' : '<span style="color:var(--text-muted)">No</span>'}</td>
                 <td>
@@ -307,7 +284,7 @@ async function loadTestimonials() {
 
 async function showTestimonialForm(id) {
   const content = document.getElementById('pageContent');
-  let t = { name: '', role: '', text: '', rating: 5, sort_order: 0, active: 1 };
+  let t = { name: '', role: '', text: '', rating: 5, sort_order: 0, active: 1, image: '' };
   if (id) {
     const res = await fetch(`${API}/admin/testimonials`, { credentials: 'include' });
     const list = await res.json();
@@ -326,6 +303,14 @@ async function showTestimonialForm(id) {
           <div class="form-group"><label class="form-label">Review *</label><textarea class="form-input" id="t_text" rows="3" required>${t.text}</textarea></div>
           <div class="form-group"><label class="form-label">Rating (1-5)</label><input type="number" class="form-input" id="t_rating" value="${t.rating}" min="1" max="5"></div>
           <div class="form-group"><label class="form-label">Sort Order</label><input type="number" class="form-input" id="t_order" value="${t.sort_order}"></div>
+          <div class="form-group">
+            <label class="form-label">Photo</label>
+            <div style="display:flex; align-items:center; gap:12px;">
+              ${t.image ? `<img src="${t.image}" id="t_imagePreview" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);">` : '<div id="t_imagePreview" style="display:none;"></div>'}
+              <input type="file" accept="image/*" id="t_image" onchange="previewTestimonialImage(this)">
+            </div>
+            ${t.image ? `<span style="font-size:12px;color:var(--text-muted);">Leave empty to keep current photo</span>` : ''}
+          </div>
           <div class="form-group" style="display:flex; align-items:center; gap:8px;">
             <input type="checkbox" id="t_active" ${t.active ? 'checked' : ''} style="width:18px;height:18px;">
             <label for="t_active">Active</label>
@@ -335,6 +320,23 @@ async function showTestimonialForm(id) {
       </div>
     </div>
   `);
+}
+
+function previewTestimonialImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = document.getElementById('t_imagePreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      preview.style.width = '60px';
+      preview.style.height = '60px';
+      preview.style.borderRadius = '50%';
+      preview.style.objectFit = 'cover';
+      preview.style.border = '2px solid var(--gold)';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
 }
 
 async function saveTestimonial(e, id) {
@@ -353,8 +355,21 @@ async function saveTestimonial(e, id) {
     const url = id ? `${API}/admin/testimonials/${id}` : `${API}/admin/testimonials`;
     const method = id ? 'PUT' : 'POST';
     const res = await apiFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    if (res.ok) { loadTestimonials(); }
-    else { const d = await res.json(); alert(d.error || 'Failed to save'); }
+    if (!res.ok) { const d = await res.json(); alert(d.error || 'Failed to save'); btn.textContent = id ? 'Update' : 'Create'; return; }
+
+    // Upload image if selected
+    const fileInput = document.getElementById('t_image');
+    const testimonialId = id || (await res.json()).id;
+    if (fileInput && fileInput.files.length > 0 && testimonialId) {
+      const formData = new FormData();
+      formData.append('image', fileInput.files[0]);
+      const imgRes = await apiFetch(`${API}/admin/testimonials/${testimonialId}/image`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!imgRes.ok) alert('Testimonial saved, but image upload failed.');
+    }
+    loadTestimonials();
   } catch (err) { alert('Error: ' + err.message); }
 }
 
@@ -371,16 +386,14 @@ async function saveWebsiteSettings(e) {
   const btn = e.target.querySelector('button');
   btn.textContent = 'Saving...';
   
-  const showBulk = document.getElementById('set_bulkSection').checked ? 'true' : 'false';
+  const showProducts = document.getElementById('set_productSection').checked ? 'true' : 'false';
   const bulukEnabled = document.getElementById('set_bulukEnabled').checked ? 'true' : 'false';
-  const showProducts = document.getElementById('set_showProducts').checked ? 'true' : 'false';
-  const showBestsellers = document.getElementById('set_showBestsellers').checked ? 'true' : 'false';
 
   try {
     const res = await apiFetch(`${API}/admin/settings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ show_bulk_section: showBulk, buluk_enabled: bulukEnabled, show_products: showProducts, show_bestsellers: showBestsellers })
+      body: JSON.stringify({ show_products: showProducts, buluk_enabled: bulukEnabled, show_bulk_section: 'false' })
     });
     
     if (res.ok) {

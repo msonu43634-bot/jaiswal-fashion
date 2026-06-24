@@ -22,7 +22,7 @@ initDb();
 // === Static files (must be before Helmet for images) ===
 const siteDir = path.join(__dirname);
 app.use((req, res, next) => {
-  const blocked = ['.env', 'node_modules', 'admin-backend/.env', 'admin-backend', 'package.json', 'package-lock.json', 'clear-data.js', 'database.js', 'crypto-utils.js', 'shiprocket.js', 'session-store.js', 'backup-db.js'];
+  const blocked = ['.env', 'node_modules', 'admin-backend/.env', 'admin-backend', 'package.json', 'package-lock.json', 'clear-data.js', 'database.js', 'crypto-utils.js', 'shiprocket.js', 'session-store.js', 'backup-db.js', 'config.js', 'db.js', 'routes', 'services', 'middleware'];
   if (blocked.some(p => req.path.startsWith('/' + p) || req.path === '/' + p))
     return res.status(403).send('Forbidden');
   next();

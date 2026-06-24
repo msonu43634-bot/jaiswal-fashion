@@ -261,6 +261,8 @@ function createTables() {
 
   // Migration: Add invoice_path to orders
   try { db.prepare("ALTER TABLE orders ADD COLUMN invoice_path TEXT DEFAULT NULL").run(); } catch(e) {}
+  // Migration: Add image to testimonials
+  try { db.prepare("ALTER TABLE testimonials ADD COLUMN image TEXT DEFAULT ''").run(); } catch(e) {}
 
   // Migration: Shiprocket fields in orders table
   const srMigrations = [

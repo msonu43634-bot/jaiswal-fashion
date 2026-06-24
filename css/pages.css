@@ -5,8 +5,8 @@
 /* ==================== PAGE HERO ==================== */
 .page-hero {
   padding: calc(80px + var(--sp-16)) 0 var(--sp-12);
-  background: linear-gradient(180deg, #101018 0%, var(--bg-primary) 100%);
-  border-bottom: 1px solid rgba(232, 185, 74, 0.08);
+  background: linear-gradient(180deg, #f2ede6 0%, var(--bg-primary) 100%);
+  border-bottom: 1px solid rgba(27, 42, 74, 0.08);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -16,7 +16,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(ellipse at 50% 30%, rgba(232, 185, 74, 0.06) 0%, transparent 60%);
+  background-image: radial-gradient(ellipse at 50% 30%, rgba(27, 42, 74, 0.06) 0%, transparent 60%);
 }
 
 /* ==================== ABOUT PAGE ==================== */
